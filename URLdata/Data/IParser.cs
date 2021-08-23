@@ -5,7 +5,7 @@ namespace URLdata.Data
 {
     public interface IParser
     {
-        public DataHandler Parse(List<IEnumerator<PageView>> pageIterators);
+        public void Parse(List<IEnumerator<PageView>> pageIterators);
         
 
     }

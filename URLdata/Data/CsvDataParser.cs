@@ -9,6 +9,9 @@ namespace URLdata.Data
     
     public class CsvDataParser : IParser
     {
+        public Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> urlSessionDictionary { get; set; }
+        public Dictionary<string, HashSet<string>>  userIdUniqueURLVisits  { get; set; }
+        
 
         public CsvDataParser()
         {
@@ -17,7 +20,7 @@ namespace URLdata.Data
         }
       
         
-        public DataHandler Parse(List<IEnumerator<PageView>> pageIterators)
+        public void Parse(List<IEnumerator<PageView>> pageIterators)
         {
             List<long> timeStampsList = new List<long>();
             
@@ -124,7 +127,10 @@ namespace URLdata.Data
                         pageIterators[indexOfMinTimeStamp].Current.timestamp;
                 }
             }
-            return new DataHandler(urlSessionDictionary, userIdUniqueURLVisits);
+
+            this.urlSessionDictionary = urlSessionDictionary;
+            this.userIdUniqueURLVisits = userIdUniqueURLVisits;
+
         }
         
     }

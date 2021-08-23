@@ -3,22 +3,37 @@ using URLdata.Data;
 
 namespace URLdata.Controllers
 {
-    [Route("sites")]
+    [Route("urls")]
     [ApiController]
     public class SiteController : ControllerBase
     {
-        private readonly IParser _dataManager;
+        private readonly IDataHandler _dataManager;
 
-        public SiteController(IParser dataManager)
+        public SiteController(IDataHandler dataManager)
         {
             _dataManager = dataManager;
         }
 
         [HttpGet]
-        public ActionResult<string> getbla()
+        public ActionResult<string> test()
         {
-            return Ok("hello");
+            return Ok("hi");
         }
-        
+
+        [HttpGet("sessions_amount/{url}")]
+        public ActionResult<int> getSessionAmount(string url)
+        {
+            int sessionsAmount = _dataManager.getSessionsAmount(url);
+            if (sessionsAmount != -1)
+            {
+                return Ok(sessionsAmount);
+            }
+            else
+            {
+                return NoContent();
+            }
+            return Ok(_dataManager.getSessionsAmount(url));
+        }
+
     }
 }

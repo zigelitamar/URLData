@@ -27,14 +27,9 @@ namespace URLdata
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            IReader reader = new CSVReader("/Users/itamarsigel/Desktop/Itamar's things");
-            IParser parser = new CsvDataParser();
-            DataHandler dataHandler = parser.Parse(reader.ReadData());
+            
             services.AddControllers();
-            services.AddSingleton<IDataHandler, DataHandler>(s =>
-            {
-                return dataHandler;
-            });
+            services.AddSingleton<IDataHandler,DataHandler>();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "URLdata", Version = "v1"}); });
         }
 
