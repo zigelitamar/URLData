@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using URLdata.Models;
 using MathNet.Numerics.Statistics;
 
@@ -11,10 +12,15 @@ namespace URLdata.Data
 
         public Dictionary<string, HashSet<string>>  userIdUniqueURLVisits { get; set; }
 
+        public Dictionary<string, double > mediansCalculated { get; set; }
+
+
 
         public DataHandler()
         {
+            mediansCalculated = new Dictionary<string, double>();
             IReader reader = new CSVReader("/Users/itamarsigel/Desktop/Itamar's things");
+            //IReader reader = new CSVReader("/Users/aviv.amsellem/Downloads/");
             CsvDataParser parser = new CsvDataParser();
             parser.Parse(reader.ReadData());
             this.urlSessionDictionary = parser.urlSessionDictionary;
@@ -47,17 +53,29 @@ namespace URLdata.Data
             return -1;
         }
 
-        //todo: implement  hash set for medians calculated
-        public long getMedian(string url)
+      
+        public double getMedian(string url)
         {
-            if (urlSessionDictionary.ContainsKey(url))
+            if (!urlSessionDictionary.ContainsKey(url))
             {
-                urlSessionDictionary[url].Item3.Sort();
-                Dictionary<String, Session> userIdSessions = urlSessionDictionary[url].Item1;
-                return urlSessionDictionary[url].Item3[urlSessionDictionary[url].Item3.Count / 2];
+                throw new KeyNotFoundException("Could not find record");
             }
+            if (mediansCalculated.ContainsKey(url))
+            {
+                return mediansCalculated[url];
+            }
+            //calculating median of sessions length and update the value in the medians map
+            var lengths = urlSessionDictionary[url].Item3;
+            lengths.Sort();
+            int lengthsSize = lengths.Count;
+            int midElement = lengthsSize / 2;
+            
+            double median = (lengthsSize % 2 != 0) ? lengths[midElement] : ((double)lengths[midElement] + lengths[midElement - 1]) / 2;
+            mediansCalculated[url] = median;
+            return median;
 
-            return 0;
+
+
         }
     }
 }

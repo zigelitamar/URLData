@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using URLdata.Data;
 
@@ -32,7 +34,29 @@ namespace URLdata.Controllers
             {
                 return NoContent();
             }
-            return Ok(_dataManager.getSessionsAmount(url));
+        }
+
+        [HttpGet("median/{url}")]
+        public ActionResult<double> getSessionsMedian(string url)
+        {
+            
+            var watch = new System.Diagnostics.Stopwatch();
+            
+            watch.Start();
+            double median = 0;
+            try
+            {
+                median = _dataManager.getMedian(url);
+            }
+            catch (KeyNotFoundException e)
+            {
+                Console.WriteLine(e.Message);
+                return NoContent();
+            }
+
+            watch.Stop();
+            Console.WriteLine($"Execution Time: {watch.ElapsedMilliseconds} ms");
+            return Ok(median);
         }
 
     }

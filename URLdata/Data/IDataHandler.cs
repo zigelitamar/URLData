@@ -6,6 +6,6 @@ namespace URLdata.Data
 
         public int getUniqueSites(string visitorID);
 
-        public long getMedian(string url);
+        public double getMedian(string url);
     }
 }
