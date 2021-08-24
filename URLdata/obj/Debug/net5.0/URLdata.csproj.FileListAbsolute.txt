@@ -27,3 +27,4 @@
 /Users/itamarsigel/RiderProjects/URLdata/URLdata/obj/Debug/net5.0/ref/URLdata.dll
 /Users/itamarsigel/RiderProjects/URLdata/URLdata/obj/Debug/net5.0/URLdata.pdb
 /Users/itamarsigel/RiderProjects/URLdata/URLdata/obj/Debug/net5.0/URLdata.genruntimeconfig.cache
+/Users/itamarsigel/RiderProjects/URLdata/URLdata/bin/Debug/net5.0/MathNet.Numerics.dll

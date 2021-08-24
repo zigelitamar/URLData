@@ -11,6 +11,7 @@ namespace URLdata.Data
 
         public Dictionary<string, HashSet<string>>  userIdUniqueURLVisits { get; set; }
 
+
         public DataHandler()
         {
             IReader reader = new CSVReader("/Users/itamarsigel/Desktop/Itamar's things");
