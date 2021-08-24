@@ -16,6 +16,11 @@ namespace URLdata.Data
 
         public CSVReader(string path)
         {
+            if (!Directory.Exists(path))
+            {
+                throw new DirectoryNotFoundException(
+                    $"Directory path: {path} is invalid.\n Please insert an existing directory path.");
+            }
             this.directory = path;
         }
         
