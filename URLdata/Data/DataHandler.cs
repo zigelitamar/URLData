@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using URLdata.Models;
 using MathNet.Numerics.Statistics;
@@ -19,8 +20,9 @@ namespace URLdata.Data
         public DataHandler()
         {
             mediansCalculated = new Dictionary<string, double>();
-            IReader reader = new CSVReader("/Users/itamarsigel/Desktop/Itamar's things");
-            //IReader reader = new CSVReader("/Users/aviv.amsellem/Downloads/");
+            string path = Path.Combine(Directory.GetCurrentDirectory(), @"Resources/");
+            IReader reader = new CSVReader(path);
+            
             CsvDataParser parser = new CsvDataParser();
             parser.Parse(reader.ReadData());
             this.urlSessionDictionary = parser.urlSessionDictionary;

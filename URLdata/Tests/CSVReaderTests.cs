@@ -39,7 +39,6 @@ namespace URLdata.Tests
         public void TestReadData()
         {
             Assert.Equal(3, this._sutCsvReader.ReadData().Count);
-
         }
     }
 }

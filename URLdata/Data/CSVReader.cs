@@ -10,8 +10,8 @@ namespace URLdata.Data
 {
     public class CSVReader : IReader
     {
-        private string directory;
-        private List<string> files = new List<string>();
+        private string directoryPath;
+        private List<string> CSVfilesList = new List<string>();
         private int totalRecords { get; set; }
 
         public CSVReader(string path)
@@ -21,13 +21,13 @@ namespace URLdata.Data
                 throw new DirectoryNotFoundException(
                     $"Directory path: {path} is invalid.\n Please insert an existing directory path.");
             }
-            this.directory = path;
+            this.directoryPath = path;
         }
         
         public List<IEnumerator<PageView>> ReadData()
         {
             this.totalRecords = 0;
-            files = this.getCSVFileNames();
+            CSVfilesList = this.getCSVFileNames();
             List<IEnumerator<PageView>> allPageViewsListsIterators = new List<IEnumerator<PageView>>();
             
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -35,17 +35,12 @@ namespace URLdata.Data
                 HasHeaderRecord = false,
             };
             
-            foreach (var currentCSVFileName in this.files)
+            foreach (var currentCSVFileName in this.CSVfilesList)
             {
                 var reader = new StreamReader(currentCSVFileName);
                 var csv = new CsvReader(reader, config);
                 
                 IEnumerable<PageView> pageViewsListIterator = csv.GetRecords<PageView>();
-                // this.totalRecords += pageViewsListIterator.Count();
-                // foreach (PageView currentPageView in pageViewsListIterator)
-                // {
-                //     Console.WriteLine($"url: {currentPageView.url}");
-                // }
                 allPageViewsListsIterators.Add(pageViewsListIterator.GetEnumerator());
             }
 
@@ -54,7 +49,7 @@ namespace URLdata.Data
 
         private List<string> getCSVFileNames()
         {
-            return Directory.GetFiles(directory, "*.csv").ToList();
+            return Directory.GetFiles(directoryPath, "*.csv").ToList();
         }
     }
 }

@@ -16,12 +16,6 @@ namespace URLdata.Controllers
             _dataManager = dataManager;
         }
 
-        [HttpGet]
-        public ActionResult<string> test()
-        {
-            return Ok("hi");
-        }
-
         [HttpGet("sessions_amount/{url}")]
         public ActionResult<int> getSessionAmount(string url)
         {

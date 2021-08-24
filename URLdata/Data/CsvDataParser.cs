@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authentication;
 using URLdata.Models;
+using Xunit.Sdk;
 
 namespace URLdata.Data
 {
@@ -15,13 +16,18 @@ namespace URLdata.Data
 
         public CsvDataParser()
         {
-            Console.WriteLine("hello");
+            //TODO: delete later
+            Console.WriteLine("CsvDataParser object created.");
 
         }
       
         
         public void Parse(List<IEnumerator<PageView>> pageIterators)
         {
+            if(pageIterators == null || pageIterators.Count == 0)
+            {
+                throw new NullReferenceException($"iterators list is null or empty.");
+            }
             List<long> timeStampsList = new List<long>();
             
             for (int i = 0; i < pageIterators.Count; i++)
