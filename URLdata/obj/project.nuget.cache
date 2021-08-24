@@ -1,17 +1,17 @@
 {
   "version": 2,
-  "dgSpecHash": "tlxIjymJ0yYAMdYEQaJaJ1sWervAHqD88qmxAlIUydtj6JUJvsNcpm6rgPG36F+R/ZW/QroWOAFcYIHlzt/2rA==",
+  "dgSpecHash": "M+sQXi4ptqY0TTXeKyLKJhQZS8jYiT/mCwKAMKt6fFYNUJnGnJ+1t6h7hDvYuY8TogrhiLxR61M8q07jJQYNIw==",
   "success": true,
-  "projectFilePath": "/Users/itamarsigel/RiderProjects/URLdata/URLdata/URLdata.csproj",
+  "projectFilePath": "/Users/aviv.amsellem/RiderProjects/URLData/URLdata/URLdata.csproj",
   "expectedPackageFiles": [
-    "/Users/itamarsigel/.nuget/packages/csvhelper/27.1.1/csvhelper.27.1.1.nupkg.sha512",
-    "/Users/itamarsigel/.nuget/packages/mathnet.numerics/5.0.0-alpha02/mathnet.numerics.5.0.0-alpha02.nupkg.sha512",
-    "/Users/itamarsigel/.nuget/packages/microsoft.extensions.apidescription.server/3.0.0/microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
-    "/Users/itamarsigel/.nuget/packages/microsoft.openapi/1.2.3/microsoft.openapi.1.2.3.nupkg.sha512",
-    "/Users/itamarsigel/.nuget/packages/swashbuckle.aspnetcore/5.6.3/swashbuckle.aspnetcore.5.6.3.nupkg.sha512",
-    "/Users/itamarsigel/.nuget/packages/swashbuckle.aspnetcore.swagger/5.6.3/swashbuckle.aspnetcore.swagger.5.6.3.nupkg.sha512",
-    "/Users/itamarsigel/.nuget/packages/swashbuckle.aspnetcore.swaggergen/5.6.3/swashbuckle.aspnetcore.swaggergen.5.6.3.nupkg.sha512",
-    "/Users/itamarsigel/.nuget/packages/swashbuckle.aspnetcore.swaggerui/5.6.3/swashbuckle.aspnetcore.swaggerui.5.6.3.nupkg.sha512"
+    "/Users/aviv.amsellem/.nuget/packages/csvhelper/27.1.1/csvhelper.27.1.1.nupkg.sha512",
+    "/Users/aviv.amsellem/.nuget/packages/mathnet.numerics/5.0.0-alpha02/mathnet.numerics.5.0.0-alpha02.nupkg.sha512",
+    "/Users/aviv.amsellem/.nuget/packages/microsoft.extensions.apidescription.server/3.0.0/microsoft.extensions.apidescription.server.3.0.0.nupkg.sha512",
+    "/Users/aviv.amsellem/.nuget/packages/microsoft.openapi/1.2.3/microsoft.openapi.1.2.3.nupkg.sha512",
+    "/Users/aviv.amsellem/.nuget/packages/swashbuckle.aspnetcore/5.6.3/swashbuckle.aspnetcore.5.6.3.nupkg.sha512",
+    "/Users/aviv.amsellem/.nuget/packages/swashbuckle.aspnetcore.swagger/5.6.3/swashbuckle.aspnetcore.swagger.5.6.3.nupkg.sha512",
+    "/Users/aviv.amsellem/.nuget/packages/swashbuckle.aspnetcore.swaggergen/5.6.3/swashbuckle.aspnetcore.swaggergen.5.6.3.nupkg.sha512",
+    "/Users/aviv.amsellem/.nuget/packages/swashbuckle.aspnetcore.swaggerui/5.6.3/swashbuckle.aspnetcore.swaggerui.5.6.3.nupkg.sha512"
   ],
   "logs": []
 }

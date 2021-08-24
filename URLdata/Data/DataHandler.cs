@@ -13,7 +13,8 @@ namespace URLdata.Data
 
         public DataHandler()
         {
-            IReader reader = new CSVReader("/Users/itamarsigel/Desktop/Itamar's things");
+            // IReader reader = new CSVReader("/Users/itamarsigel/Desktop/Itamar's things");
+            IReader reader = new CSVReader("/Users/aviv.amsellem/Downloads/");
             CsvDataParser parser = new CsvDataParser();
             parser.Parse(reader.ReadData());
             this.urlSessionDictionary = parser.urlSessionDictionary;
