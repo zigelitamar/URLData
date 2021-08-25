@@ -9,6 +9,7 @@ namespace URLdata.Data
 {
     public class DataHandler : IDataHandler
     {
+        private readonly IParser _parser;
         public Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> urlSessionDictionary { get; set; }
 
         public Dictionary<string, HashSet<string>>  userIdUniqueURLVisits { get; set; }
@@ -17,22 +18,13 @@ namespace URLdata.Data
 
 
 
-        public DataHandler()
+        public DataHandler(IParser parser)
         {
+            _parser = parser;
             mediansCalculated = new Dictionary<string, double>();
-            string path = Path.Combine(Directory.GetCurrentDirectory(), @"Resources/");
-            IReader reader = new CSVReader(path);
-            
-            CsvDataParser parser = new CsvDataParser();
-            parser.Parse(reader.ReadData());
-            this.urlSessionDictionary = parser.urlSessionDictionary;
-            this.userIdUniqueURLVisits = parser.userIdUniqueURLVisits;
-            Console.WriteLine("DONE PROCESSING");
-        }
+            urlSessionDictionary = _parser.urlSessionDictionary;
+            userIdUniqueURLVisits = _parser.userIdUniqueURLVisits;
 
-        public int getsize()
-        {
-            return urlSessionDictionary.Count;
         }
 
         public int getSessionsAmount(string url)
@@ -41,7 +33,10 @@ namespace URLdata.Data
             {
                 return urlSessionDictionary[url].Item2;
             }
-            return -1;
+            else
+            {
+                throw new KeyNotFoundException("no records found");
+            }
             
         }
 
@@ -58,6 +53,7 @@ namespace URLdata.Data
       
         public double getMedian(string url)
         {
+            
             if (!urlSessionDictionary.ContainsKey(url))
             {
                 throw new KeyNotFoundException("Could not find record");
@@ -71,7 +67,6 @@ namespace URLdata.Data
             lengths.Sort();
             int lengthsSize = lengths.Count;
             int midElement = lengthsSize / 2;
-            
             double median = (lengthsSize % 2 != 0) ? lengths[midElement] : ((double)lengths[midElement] + lengths[midElement - 1]) / 2;
             mediansCalculated[url] = median;
             return median;

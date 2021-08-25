@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using URLdata.Data;
 
@@ -11,6 +13,7 @@ namespace URLdata.Controllers
 
         public VisitorsController(IDataHandler dataManager)
         {
+ 
             _dataManager = dataManager;
         }
 

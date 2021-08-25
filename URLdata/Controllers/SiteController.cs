@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using URLdata.Data;
 
@@ -17,17 +18,20 @@ namespace URLdata.Controllers
         }
 
         [HttpGet("sessions_amount/{url}")]
-        public ActionResult<int> getSessionAmount(string url)
+        public  ActionResult<int> getSessionAmount(string url)
         {
-            int sessionsAmount = _dataManager.getSessionsAmount(url);
-            if (sessionsAmount != -1)
+            int sessionsAmount = 0;
+            try
             {
+                sessionsAmount =  _dataManager.getSessionsAmount(url);
                 return Ok(sessionsAmount);
             }
-            else
+            catch (KeyNotFoundException e)
             {
+                Console.WriteLine(e);
                 return NoContent();
             }
+            
         }
 
         [HttpGet("median/{url}")]
@@ -52,6 +56,8 @@ namespace URLdata.Controllers
             Console.WriteLine($"Execution Time: {watch.ElapsedMilliseconds} ms");
             return Ok(median);
         }
+
+
 
     }
 }

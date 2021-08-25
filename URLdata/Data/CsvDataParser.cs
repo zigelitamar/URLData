@@ -10,20 +10,24 @@ namespace URLdata.Data
     
     public class CsvDataParser : IParser
     {
-        public Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> urlSessionDictionary { get; set; }
+        private readonly IReader _reader;
+        public Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> urlSessionDictionary { get;
+            set;
+        }
         public Dictionary<string, HashSet<string>>  userIdUniqueURLVisits  { get; set; }
         
 
-        public CsvDataParser()
+        public CsvDataParser(IReader reader)
         {
-            //TODO: delete later
+            _reader = reader;
             Console.WriteLine("CsvDataParser object created.");
 
         }
       
         
-        public void Parse(List<IEnumerator<PageView>> pageIterators)
+        public void Parse()
         {
+            var pageIterators  = _reader.ReadData();
             if(pageIterators == null || pageIterators.Count == 0)
             {
                 throw new NullReferenceException($"iterators list is null or empty.");
@@ -136,6 +140,7 @@ namespace URLdata.Data
 
             this.urlSessionDictionary = urlSessionDictionary;
             this.userIdUniqueURLVisits = userIdUniqueURLVisits;
+            Console.WriteLine("DONE PROCESSING");
 
         }
         
