@@ -20,6 +20,7 @@ namespace URLdata.Data
 
         public DataHandler(IParser parser)
         {
+
             _parser = parser;
             mediansCalculated = new Dictionary<string, double>();
             urlSessionDictionary = _parser.urlSessionDictionary;

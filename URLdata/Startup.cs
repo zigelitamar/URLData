@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -29,7 +30,16 @@ namespace URLdata
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var directorPath = Path.Combine(Directory.GetCurrentDirectory(), $"{ConfigurationManager.AppSettings["resource directory"]}");
+            var directorPath = "";
+            try
+            {
+                directorPath = Path.Combine(Directory.GetCurrentDirectory(),
+                    $"{ConfigurationManager.AppSettings["resource directory"]}");
+            }
+            catch (Exception e)
+            {
+                //implement
+            }
             IReader reader = new CSVReader(directorPath);
             
             IParser parser = new CsvDataParser(reader);
@@ -37,16 +47,18 @@ namespace URLdata
             {
                 parser.Parse();
             }
-            catch(UnauthorizedAccessException e)
+            catch(Exception e)
             {
-                //?@?@?@?@?@@?@?@?@?@?@?@?@?@@?@?@?
+                //parser dose not hold any dta for the handler
             }
             services.AddControllers();
             services.AddSingleton(parser);
+            services.AddSingleton<DataStatusMiddleware>();
             services.AddSingleton<IDataHandler,DataHandler>();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "URLdata", Version = "v1"}); });
         }
 
+ 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -57,6 +69,7 @@ namespace URLdata
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "URLdata v1"));
             }
 
+            app.UseMiddleware<DataStatusMiddleware>();
             app.UseHttpsRedirection();
 
             app.UseRouting();
@@ -64,6 +77,8 @@ namespace URLdata
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+    
+        
         }
     }
 }

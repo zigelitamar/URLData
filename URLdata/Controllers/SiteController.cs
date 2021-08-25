@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using URLdata.Data;
 
@@ -18,12 +19,12 @@ namespace URLdata.Controllers
         }
 
         [HttpGet("sessions_amount/{url}")]
-        public  ActionResult<int> getSessionAmount(string url)
+        public  async Task<ActionResult<int>> getSessionAmount(string url)
         {
             int sessionsAmount = 0;
             try
             {
-                sessionsAmount =  _dataManager.getSessionsAmount(url);
+                sessionsAmount = await Task.Run(()=>  _dataManager.getSessionsAmount(url));
                 return Ok(sessionsAmount);
             }
             catch (KeyNotFoundException e)
@@ -35,7 +36,7 @@ namespace URLdata.Controllers
         }
 
         [HttpGet("median/{url}")]
-        public ActionResult<double> getSessionsMedian(string url)
+        public async Task<ActionResult<double>> getSessionsMedian(string url)
         {
             
             var watch = new System.Diagnostics.Stopwatch();
@@ -44,7 +45,7 @@ namespace URLdata.Controllers
             double median = 0;
             try
             {
-                median = _dataManager.getMedian(url);
+                median = await Task.Run(()=>_dataManager.getMedian(url));
             }
             catch (KeyNotFoundException e)
             {

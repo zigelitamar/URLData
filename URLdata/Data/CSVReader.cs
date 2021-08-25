@@ -12,22 +12,16 @@ namespace URLdata.Data
     {
         private string directoryPath;
         private List<string> CSVfilesList = new List<string>();
-        private int totalRecords { get; set; }
 
         public CSVReader(string path)
         {
-            if (!Directory.Exists(path))
-            {
-                throw new DirectoryNotFoundException(
-                    $"Directory path: {path} is invalid.\n Please insert an existing directory path.");
-            }
-            this.directoryPath = path;
+   
+            directoryPath = path;
         }
         
         public List<IEnumerator<PageView>> ReadData()
         {
-            this.totalRecords = 0;
-            CSVfilesList = this.getCSVFileNames();
+            CSVfilesList = getCSVFileNames();
             List<IEnumerator<PageView>> allPageViewsListsIterators = new List<IEnumerator<PageView>>();
             
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -49,6 +43,7 @@ namespace URLdata.Data
 
         private List<string> getCSVFileNames()
         {
+            
             return Directory.GetFiles(directoryPath, "*.csv").ToList();
         }
     }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using URLdata.Data;
 
@@ -18,9 +19,9 @@ namespace URLdata.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<int> uniqueSites(string id)
+        public async Task<ActionResult<int>> uniqueSites(string id)
         {
-            return Ok(_dataManager.getUniqueSites($"visitor_{id}"));
+            return Ok( await Task.Run(()=> _dataManager.getUniqueSites($"visitor_{id}")));
         }
         
     }
