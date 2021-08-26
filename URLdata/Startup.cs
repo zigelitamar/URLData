@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Configuration;
 using System.IO;
 using System.Linq;
@@ -40,19 +41,22 @@ namespace URLdata
             {
                 //implement
             }
-            IReader reader = new CSVReader(directorPath);
-            
-            IParser parser = new CsvDataParser(reader);
-            try
-            {
-                parser.Parse();
-            }
-            catch(Exception e)
-            {
-                //parser dose not hold any dta for the handler
-            }
+            // IReader reader = new CSVReader(directorPath);
+            // //services.AddSingleton(reader);
+            // IParser parser = new CsvDataParser(reader);
+            // try
+            // {
+            //     parser.Parse();
+            // }
+            // catch(Exception e)
+            // {
+            //     Console.WriteLine("parser dose not hold any data for the handler");
+            //     //parser dose not hold any dta for the handler
+            // }
             services.AddControllers();
-            services.AddSingleton(parser);
+            services.AddSingleton<IReader>( reader => new CSVReader(directorPath));
+            services.AddSingleton<IParser,CsvDataParser>();
+            services.AddHostedService<DataParsingService>();
             services.AddSingleton<DataStatusMiddleware>();
             services.AddSingleton<IDataHandler,DataHandler>();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "URLdata", Version = "v1"}); });
