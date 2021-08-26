@@ -63,7 +63,7 @@ namespace URLdata.Data
             List<long> timeStampsList = new List<long>();
             
             // get the timestamp of each iterator (if the csv file is empty/no records in the csv file - remove the iterator)
-            this.GetFirstTimeStamps(csvFilesIterators, timeStampsList);
+            GetFirstTimeStamps(csvFilesIterators, timeStampsList);
 
             // initial the data structures to save the necessary data from the csv files.
             Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> urlSessionDictionary = new Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>>(); 
@@ -79,7 +79,7 @@ namespace URLdata.Data
                 
                 string visitorId = currentPageView.visitor;
 
-                this.AddUrlToVisitor(visitorId, userIdUniqueUrlVisits, currentPageView);
+                AddUrlToVisitor(visitorId, userIdUniqueUrlVisits, currentPageView);
 
                 //check if the current url exist in the dictionary
                 if (urlSessionDictionary.ContainsKey(currentPageView.mainUrl))
@@ -87,11 +87,11 @@ namespace URLdata.Data
                     //check if the current visitor already have a session for the current url
                     if (urlSessionDictionary[currentPageView.mainUrl].Item1.ContainsKey(currentPageView.visitor))
                     {
-                        this.UpdateVisitorSessions(urlSessionDictionary, currentPageView);
+                       UpdateVisitorSessions(urlSessionDictionary, currentPageView);
                     }
                     else // the current visitor page view is its first appearance
                     {
-                        this.InitialFirstVisitorSession(urlSessionDictionary, currentPageView);
+                        InitialFirstVisitorSession(urlSessionDictionary, currentPageView);
                     }
                 }
                 else //url not exist yet in the data structure -> set first session timestamp, set sessions counter to 1, initial new list for sessions lengths
@@ -103,7 +103,7 @@ namespace URLdata.Data
                 }
 
                 // promote the chosen iterator with the minimal time stamp
-                this.PromoteIterator(csvFilesIterators, timeStampsList, indexOfMinTimeStamp);
+                PromoteIterator(csvFilesIterators, timeStampsList, indexOfMinTimeStamp);
             }
 
             this.urlSessionDictionary = urlSessionDictionary;
