@@ -8,20 +8,41 @@ using URLdata.Models;
 
 namespace URLdata.Data
 {
+    /// <summary>
+    /// Reader class for CSV files.
+    /// Implements the IReader interface.
+    /// </summary>
     public class CSVReader : IReader
     {
         private string directoryPath;
         private List<string> CSVfilesList = new List<string>();
 
+        /// <summary>
+        /// Constructor.
+        /// receives the path from the app.config file to the directory
+        /// where all the CSV files located.
+        /// </summary>
+        /// <param name="path">
+        /// string argument - a path to the directory where the
+        /// CSV files located in.
+        /// </param>
         public CSVReader(string path)
         {
    
             directoryPath = path;
         }
         
+        /// <summary>
+        /// IReader interface method.
+        /// The method taking all the CSV files located in the given path and
+        /// generates to each CSV file an iterator for later use.
+        /// </summary>
+        /// <returns>
+        /// The method return a list of iterators for each of the CSV files.
+        /// </returns>
         public List<IEnumerator<PageView>> ReadData()
         {
-            CSVfilesList = getCSVFileNames();
+            CSVfilesList = GetCsvFileNames();
             List<IEnumerator<PageView>> allPageViewsListsIterators = new List<IEnumerator<PageView>>();
             
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -41,7 +62,15 @@ namespace URLdata.Data
             return allPageViewsListsIterators;
         }
 
-        private List<string> getCSVFileNames()
+        /// <summary>
+        /// The method scan the directory path and return all the
+        /// CSV files name.
+        /// </summary>
+        /// <returns>
+        /// The method returns a list of strings containing all the CSV files names
+        /// in the given path.
+        /// </returns>
+        private List<string> GetCsvFileNames()
         {
             
             return Directory.GetFiles(directoryPath, "*.csv").ToList();

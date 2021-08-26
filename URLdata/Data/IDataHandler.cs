@@ -1,11 +1,14 @@
 namespace URLdata.Data
 {
+    /// <summary>
+    /// Interface class to handle API requests that require the parsed data structures.
+    /// </summary>
     public interface IDataHandler
     {
-        public int getSessionsAmount(string url);
+        public int GetSessionsAmount(string url);
 
-        public int getUniqueSites(string visitorID);
+        public int GetUniqueSites(string visitorId);
 
-        public double getMedian(string url);
+        public double GetMedian(string url);
     }
 }

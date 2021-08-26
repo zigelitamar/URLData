@@ -24,7 +24,7 @@ namespace URLdata.Controllers
             int sessionsAmount = 0;
             try
             {
-                sessionsAmount = await Task.Run(()=>  _dataManager.getSessionsAmount(url));
+                sessionsAmount = await Task.Run(()=>  _dataManager.GetSessionsAmount(url));
                 return Ok(sessionsAmount);
             }
             catch (KeyNotFoundException e)
@@ -45,7 +45,7 @@ namespace URLdata.Controllers
             double median = 0;
             try
             {
-                median = await Task.Run(()=>_dataManager.getMedian(url));
+                median = await Task.Run(()=>_dataManager.GetMedian(url));
             }
             catch (KeyNotFoundException e)
             {

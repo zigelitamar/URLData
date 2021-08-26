@@ -2,6 +2,9 @@ using CsvHelper.Configuration.Attributes;
 
 namespace URLdata.Models
 {
+    /// <summary>
+    /// The class represent a record from database.
+    /// </summary>
     public class PageView
     {
         [Index(0)]
