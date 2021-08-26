@@ -5,6 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace URLdata.Data
 {
+    /// <summary>
+    ///
+    /// 
+    /// </summary>
     public class DataStatusMiddleware :IMiddleware
     {
         private readonly IParser _parser ;

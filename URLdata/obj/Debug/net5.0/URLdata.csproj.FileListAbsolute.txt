@@ -237,3 +237,16 @@
 /Users/itamarsigel/RiderProjects/URLdata/URLdata/bin/Debug/net5.0/runtimes/win/lib/netcoreapp3.1/System.Drawing.Common.dll
 /Users/itamarsigel/RiderProjects/URLdata/URLdata/bin/Debug/net5.0/runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll
 /Users/itamarsigel/RiderProjects/URLdata/URLdata/bin/Debug/net5.0/runtimes/win/lib/netcoreapp3.1/System.Windows.Extensions.dll
+/Users/aviv.amsellem/RiderProjects/URLData/URLdata/bin/Debug/net5.0/Configurations/app.config
+/Users/aviv.amsellem/RiderProjects/URLData/URLdata/bin/Debug/net5.0/URLdata.dll.config
+/Users/aviv.amsellem/RiderProjects/URLData/URLdata/bin/Debug/net5.0/Microsoft.Win32.SystemEvents.dll
+/Users/aviv.amsellem/RiderProjects/URLData/URLdata/bin/Debug/net5.0/System.Configuration.ConfigurationManager.dll
+/Users/aviv.amsellem/RiderProjects/URLData/URLdata/bin/Debug/net5.0/System.Drawing.Common.dll
+/Users/aviv.amsellem/RiderProjects/URLData/URLdata/bin/Debug/net5.0/System.Security.Cryptography.ProtectedData.dll
+/Users/aviv.amsellem/RiderProjects/URLData/URLdata/bin/Debug/net5.0/System.Security.Permissions.dll
+/Users/aviv.amsellem/RiderProjects/URLData/URLdata/bin/Debug/net5.0/System.Windows.Extensions.dll
+/Users/aviv.amsellem/RiderProjects/URLData/URLdata/bin/Debug/net5.0/runtimes/win/lib/netcoreapp3.1/Microsoft.Win32.SystemEvents.dll
+/Users/aviv.amsellem/RiderProjects/URLData/URLdata/bin/Debug/net5.0/runtimes/unix/lib/netcoreapp3.1/System.Drawing.Common.dll
+/Users/aviv.amsellem/RiderProjects/URLData/URLdata/bin/Debug/net5.0/runtimes/win/lib/netcoreapp3.1/System.Drawing.Common.dll
+/Users/aviv.amsellem/RiderProjects/URLData/URLdata/bin/Debug/net5.0/runtimes/win/lib/netstandard2.0/System.Security.Cryptography.ProtectedData.dll
+/Users/aviv.amsellem/RiderProjects/URLData/URLdata/bin/Debug/net5.0/runtimes/win/lib/netcoreapp3.1/System.Windows.Extensions.dll
