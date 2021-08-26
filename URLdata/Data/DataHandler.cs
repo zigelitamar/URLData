@@ -13,7 +13,8 @@ namespace URLdata.Data
     /// </summary>
     public class DataHandler : IDataHandler
     {
-        public Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> urlSessionDictionary { get; }
+        private readonly IParser _parser;
+        public Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> UrlSessionDictionary { get; }
 
         public Dictionary<string, HashSet<string>>  UserIdUniqueUrlVisits { get; }
 
@@ -33,10 +34,10 @@ namespace URLdata.Data
         /// </param>
         public DataHandler(IParser parser)
         {
-            var parser1 = parser;
+            _parser = parser;
             MediansCalculated = new Dictionary<string, double>();
-            urlSessionDictionary = parser1.UrlSessionDictionary;
-            UserIdUniqueUrlVisits = parser1.UserIdUniqueUrlVisits;
+            UrlSessionDictionary = _parser.UrlSessionDictionary;
+            UserIdUniqueUrlVisits = _parser.UserIdUniqueUrlVisits;
 
         }
         
@@ -53,9 +54,9 @@ namespace URLdata.Data
         /// </exception>
         public int GetSessionsAmount(string url)
         {
-            if (urlSessionDictionary.ContainsKey(url))
+            if (UrlSessionDictionary.ContainsKey(url))
             {
-                return urlSessionDictionary[url].Item2;
+                return UrlSessionDictionary[url].Item2;
             }
             else
             {
@@ -100,7 +101,7 @@ namespace URLdata.Data
         public double GetMedian(string url)
         {
             
-            if (!urlSessionDictionary.ContainsKey(url))
+            if (!UrlSessionDictionary.ContainsKey(url))
             {
                 throw new KeyNotFoundException("Could not find record");
             }
@@ -109,7 +110,7 @@ namespace URLdata.Data
                 return MediansCalculated[url];
             }
             //calculating median of sessions length and update the value in the medians map
-            var lengths = urlSessionDictionary[url].Item3;
+            var lengths = UrlSessionDictionary[url].Item3;
             lengths.Sort();
             int lengthsSize = lengths.Count;
             int midElement = lengthsSize / 2;
