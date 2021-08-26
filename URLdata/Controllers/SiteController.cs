@@ -19,12 +19,11 @@ namespace URLdata.Controllers
         }
 
         [HttpGet("sessions_amount/{url}")]
-        public  async Task<ActionResult<int>> getSessionAmount(string url)
+        public  async Task<ActionResult<int>> GetSessionAmount(string url)
         {
-            int sessionsAmount = 0;
             try
             {
-                sessionsAmount = await Task.Run(()=>  _dataManager.GetSessionsAmount(url));
+                var sessionsAmount = await Task.Run(()=>  _dataManager.GetSessionsAmount(url));
                 return Ok(sessionsAmount);
             }
             catch (KeyNotFoundException e)
@@ -36,7 +35,7 @@ namespace URLdata.Controllers
         }
 
         [HttpGet("median/{url}")]
-        public async Task<ActionResult<double>> getSessionsMedian(string url)
+        public async Task<ActionResult<double>> GetSessionsMedian(string url)
         {
             
             var watch = new System.Diagnostics.Stopwatch();

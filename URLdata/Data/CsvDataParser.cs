@@ -17,10 +17,10 @@ namespace URLdata.Data
     public class CsvDataParser : IParser
     {
         private readonly IReader _reader;
-        public Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> urlSessionDictionary { get;
+        public Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> UrlSessionDictionary { get;
             set;
         }
-        public Dictionary<string, HashSet<string>>  userIdUniqueUrlVisits  { get; set; }
+        public Dictionary<string, HashSet<string>>  UserIdUniqueUrlVisits  { get; set; }
         
         /// <summary>
         /// Constructor.
@@ -106,8 +106,8 @@ namespace URLdata.Data
                 PromoteIterator(csvFilesIterators, timeStampsList, indexOfMinTimeStamp);
             }
 
-            this.urlSessionDictionary = urlSessionDictionary;
-            this.userIdUniqueUrlVisits = userIdUniqueUrlVisits;
+            this.UrlSessionDictionary = urlSessionDictionary;
+            this.UserIdUniqueUrlVisits = userIdUniqueUrlVisits;
             Console.WriteLine("DONE PROCESSING");
         }
 

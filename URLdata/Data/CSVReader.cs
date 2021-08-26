@@ -15,7 +15,7 @@ namespace URLdata.Data
     /// </summary>
     public class CSVReader : IReader
     {
-        private string directoryPath;
+        private readonly string _directoryPath;
         private List<string> CSVfilesList = new List<string>();
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace URLdata.Data
         public CSVReader(string path)
         {
    
-            directoryPath = path;
+            _directoryPath = path;
         }
         
         /// <summary>
@@ -55,12 +55,12 @@ namespace URLdata.Data
                 HasHeaderRecord = false,
             };
             
-            foreach (var currentCSVFileName in this.CSVfilesList)
+            foreach (var currentCsvFileName in this.CSVfilesList)
             {
-                var reader = new StreamReader(currentCSVFileName);
+                var reader = new StreamReader(currentCsvFileName);
                 var csv = new CsvReader(reader, config);
                 
-                IEnumerable<PageView> pageViewsListIterator = csv.GetRecords<PageView>();
+                var pageViewsListIterator = csv.GetRecords<PageView>();
                 allPageViewsListsIterators.Add(pageViewsListIterator.GetEnumerator());
             }
 
@@ -80,7 +80,7 @@ namespace URLdata.Data
 
             try
             {
-                return Directory.GetFiles(directoryPath, "*.csv").ToList();
+                return Directory.GetFiles(_directoryPath, "*.csv").ToList();
             }
             catch (Exception e)
             {

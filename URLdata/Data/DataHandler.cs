@@ -15,9 +15,9 @@ namespace URLdata.Data
     {
         public Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> urlSessionDictionary { get; }
 
-        public Dictionary<string, HashSet<string>>  userIdUniqueUrlVisits { get; }
+        public Dictionary<string, HashSet<string>>  UserIdUniqueUrlVisits { get; }
 
-        public Dictionary<string, double > mediansCalculated { get; }
+        public Dictionary<string, double > MediansCalculated { get; }
 
 
 
@@ -34,9 +34,9 @@ namespace URLdata.Data
         public DataHandler(IParser parser)
         {
             var parser1 = parser;
-            mediansCalculated = new Dictionary<string, double>();
-            urlSessionDictionary = parser1.urlSessionDictionary;
-            userIdUniqueUrlVisits = parser1.userIdUniqueUrlVisits;
+            MediansCalculated = new Dictionary<string, double>();
+            urlSessionDictionary = parser1.UrlSessionDictionary;
+            UserIdUniqueUrlVisits = parser1.UserIdUniqueUrlVisits;
 
         }
         
@@ -75,9 +75,9 @@ namespace URLdata.Data
         /// </returns>
         public int GetUniqueSites(string visitorId)
         {
-            if (userIdUniqueUrlVisits.ContainsKey(visitorId))
+            if (UserIdUniqueUrlVisits.ContainsKey(visitorId))
             {
-                return userIdUniqueUrlVisits[visitorId].Count;
+                return UserIdUniqueUrlVisits[visitorId].Count;
             }
 
             return -1;
@@ -104,9 +104,9 @@ namespace URLdata.Data
             {
                 throw new KeyNotFoundException("Could not find record");
             }
-            if (mediansCalculated.ContainsKey(url))
+            if (MediansCalculated.ContainsKey(url))
             {
-                return mediansCalculated[url];
+                return MediansCalculated[url];
             }
             //calculating median of sessions length and update the value in the medians map
             var lengths = urlSessionDictionary[url].Item3;
@@ -114,7 +114,7 @@ namespace URLdata.Data
             int lengthsSize = lengths.Count;
             int midElement = lengthsSize / 2;
             double median = (lengthsSize % 2 != 0) ? lengths[midElement] : ((double)lengths[midElement] + lengths[midElement - 1]) / 2;
-            mediansCalculated[url] = median;
+            MediansCalculated[url] = median;
             return median;
         }
     }

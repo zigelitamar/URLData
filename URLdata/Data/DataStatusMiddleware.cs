@@ -19,12 +19,11 @@ namespace URLdata.Data
         }
         public async  Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            if (_parser.urlSessionDictionary == null)
+            if (_parser.UrlSessionDictionary == null)
             {
                 Console.WriteLine("bad parser / somthing went wrong with the file reading");
                 context.Response.StatusCode = 503;
                 await context.Response.WriteAsync(" service is currentlly unavailable");
-                return;
             }
             else
             {
