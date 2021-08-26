@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Authentication;
+using URLdata.Exceptions;
 using URLdata.Models;
 using Xunit.Sdk;
 
@@ -40,7 +42,16 @@ namespace URLdata.Data
         public void Parse()
         {
             // get iterators list
-            var csvFilesIterators  = _reader.ReadData();
+            List<IEnumerator<PageView>> csvFilesIterators = null;
+            try
+            {
+                 csvFilesIterators  = _reader.ReadData();
+            }
+            catch (FileLoadException e)
+            {
+                Console.WriteLine(e);
+                throw new ParsingException();
+            }
             
             // checks if the list is not empty (no csv files)
             if(csvFilesIterators == null || csvFilesIterators.Count == 0)

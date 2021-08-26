@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/aviv.amsellem/RiderProjects/URLData/URLdata/URLdata.csproj": {}
+    "/Users/itamarsigel/RiderProjects/URLdata/URLdata/URLdata.csproj": {}
   },
   "projects": {
-    "/Users/aviv.amsellem/RiderProjects/URLData/URLdata/URLdata.csproj": {
+    "/Users/itamarsigel/RiderProjects/URLdata/URLdata/URLdata.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/aviv.amsellem/RiderProjects/URLData/URLdata/URLdata.csproj",
+        "projectUniqueName": "/Users/itamarsigel/RiderProjects/URLdata/URLdata/URLdata.csproj",
         "projectName": "URLdata",
-        "projectPath": "/Users/aviv.amsellem/RiderProjects/URLData/URLdata/URLdata.csproj",
-        "packagesPath": "/Users/aviv.amsellem/.nuget/packages/",
-        "outputPath": "/Users/aviv.amsellem/RiderProjects/URLData/URLdata/obj/",
+        "projectPath": "/Users/itamarsigel/RiderProjects/URLdata/URLdata/URLdata.csproj",
+        "packagesPath": "/Users/itamarsigel/.nuget/packages/",
+        "outputPath": "/Users/itamarsigel/RiderProjects/URLdata/URLdata/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/aviv.amsellem/.nuget/NuGet/NuGet.Config"
+          "/Users/itamarsigel/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net5.0"

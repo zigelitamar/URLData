@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using URLdata.Exceptions;
 
 namespace URLdata.Data
 {
@@ -16,9 +17,17 @@ namespace URLdata.Data
         public async Task StartAsync(CancellationToken cancellationToken)
         {
              Console.WriteLine("on start action");
-             _parser.Parse();
-             await Task.Delay(20000);
-             Console.WriteLine("Done parsing");
+             try
+             {
+                 _parser.Parse();
+                 await Task.Delay(500);
+                 Console.WriteLine("Done parsing");
+             }
+             catch (ParsingException e)
+             {
+                 Console.WriteLine(e);
+             }
+  
             
         }
 

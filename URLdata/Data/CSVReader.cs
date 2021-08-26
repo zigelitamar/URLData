@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -43,6 +44,10 @@ namespace URLdata.Data
         public List<IEnumerator<PageView>> ReadData()
         {
             CSVfilesList = GetCsvFileNames();
+            if (CSVfilesList == null)
+            {
+                throw new FileLoadException();
+            }
             List<IEnumerator<PageView>> allPageViewsListsIterators = new List<IEnumerator<PageView>>();
             
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -72,8 +77,16 @@ namespace URLdata.Data
         /// </returns>
         private List<string> GetCsvFileNames()
         {
-            
-            return Directory.GetFiles(directoryPath, "*.csv").ToList();
+
+            try
+            {
+                return Directory.GetFiles(directoryPath, "*.csv").ToList();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Either reading files not Exist or you dont have permissions for the reading files");
+                return null;
+            }
         }
     }
 }

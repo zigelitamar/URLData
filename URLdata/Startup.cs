@@ -39,20 +39,9 @@ namespace URLdata
             }
             catch (Exception e)
             {
-                //implement
+                throw new FileNotFoundException("repository dose not exist!");
             }
-            // IReader reader = new CSVReader(directorPath);
-            // //services.AddSingleton(reader);
-            // IParser parser = new CsvDataParser(reader);
-            // try
-            // {
-            //     parser.Parse();
-            // }
-            // catch(Exception e)
-            // {
-            //     Console.WriteLine("parser dose not hold any data for the handler");
-            //     //parser dose not hold any dta for the handler
-            // }
+    
             services.AddControllers();
             services.AddSingleton<IReader>( reader => new CSVReader(directorPath));
             services.AddSingleton<IParser,CsvDataParser>();
