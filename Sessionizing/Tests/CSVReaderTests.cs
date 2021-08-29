@@ -1,9 +1,9 @@
 // using System;
 // using System.IO;
-// using URLdata.Data;
+// using Sessionizing.Data;
 // using Xunit;
 //
-// namespace URLdata.Tests
+// namespace Sessionizing.Tests
 // {
 //     public class ReaderTests
 //     {
@@ -11,7 +11,7 @@
 //
 //         public ReaderTests()
 //         {
-//             this._sutCsvReader = new CSVReader("/Users/aviv.amsellem/RiderProjects/URLData/URLdata/Resources");
+//             this._sutCsvReader = new CSVReader("/Users/aviv.amsellem/RiderProjects/URLData/Sessionizing/Resources");
 //         }
 //
 //         /// <summary>

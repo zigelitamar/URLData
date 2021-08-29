@@ -48,7 +48,7 @@ namespace URLdata
             services.AddHostedService<DataParsingService>();
             services.AddSingleton<DataStatusMiddleware>();
             services.AddSingleton<IDataHandler,DataHandler>();
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "URLdata", Version = "v1"}); });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Sessionizing", Version = "v1"}); });
         }
 
  
@@ -59,7 +59,7 @@ namespace URLdata
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "URLdata v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sessionizing v1"));
             }
 
             app.UseMiddleware<DataStatusMiddleware>();
