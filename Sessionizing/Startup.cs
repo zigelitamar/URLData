@@ -31,17 +31,10 @@ namespace URLdata
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var directorPath = "";
-            try
-            {
-                directorPath = Path.Combine(Directory.GetCurrentDirectory(),
-                    $"{ConfigurationManager.AppSettings["resource directory"]}");
-            }
-            catch (Exception e)
-            {
-                throw new FileNotFoundException("repository dose not exist!");
-            }
-    
+            // get path from app.config file.
+            var directorPath = Path.Combine(Directory.GetCurrentDirectory(),
+                $"{ConfigurationManager.AppSettings["resource directory"]}");
+
             services.AddControllers();
             services.AddSingleton<IReader>( reader => new CSVReader(directorPath));
             services.AddSingleton<IParser,CsvDataParser>();

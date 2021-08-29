@@ -41,6 +41,10 @@ namespace URLdata.Data
         /// <exception cref="NullReferenceException"></exception>
         public void Parse()
         {
+            if (_reader == null)
+            {
+                throw new NullReferenceException("IReader object is null");
+            }
             // get iterators list
             List<IEnumerator<PageView>> csvFilesIterators = null;
             try

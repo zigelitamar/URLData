@@ -117,6 +117,7 @@ namespace URLdata.Data
             double median = (lengthsSize % 2 != 0) ? lengths[midElement] : ((double)lengths[midElement] + lengths[midElement - 1]) / 2;
             MediansCalculated[url] = median;
             return median;
+
         }
     }
 }
