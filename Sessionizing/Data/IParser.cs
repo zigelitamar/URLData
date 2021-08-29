@@ -9,10 +9,10 @@ namespace URLdata.Data
     /// </summary>
     public interface IParser
     {
-        public Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> urlSessionDictionary { get;
+        public Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> UrlSessionDictionary { get;
             set;
         }
-        public Dictionary<string, HashSet<string>>  userIdUniqueUrlVisits { get; set; }
+        public Dictionary<string, HashSet<string>>  UserIdUniqueUrlVisits { get; set; }
         public void Parse();
         
 

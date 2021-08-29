@@ -13,11 +13,12 @@ namespace URLdata.Data
     /// </summary>
     public class DataHandler : IDataHandler
     {
-        public Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> urlSessionDictionary { get; }
+        private readonly IParser _parser;
+        public Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> UrlSessionDictionary { get; }
 
-        public Dictionary<string, HashSet<string>>  userIdUniqueUrlVisits { get; }
+        public Dictionary<string, HashSet<string>>  UserIdUniqueUrlVisits { get; }
 
-        public Dictionary<string, double > mediansCalculated { get; }
+        public Dictionary<string, double > MediansCalculated { get; }
 
 
 
@@ -33,10 +34,10 @@ namespace URLdata.Data
         /// </param>
         public DataHandler(IParser parser)
         {
-            var parser1 = parser;
-            mediansCalculated = new Dictionary<string, double>();
-            urlSessionDictionary = parser1.urlSessionDictionary;
-            userIdUniqueUrlVisits = parser1.userIdUniqueUrlVisits;
+            _parser = parser;
+            MediansCalculated = new Dictionary<string, double>();
+            UrlSessionDictionary = _parser.UrlSessionDictionary;
+            UserIdUniqueUrlVisits = _parser.UserIdUniqueUrlVisits;
 
         }
         
@@ -53,9 +54,9 @@ namespace URLdata.Data
         /// </exception>
         public int GetSessionsAmount(string url)
         {
-            if (urlSessionDictionary.ContainsKey(url))
+            if (UrlSessionDictionary.ContainsKey(url))
             {
-                return urlSessionDictionary[url].Item2;
+                return UrlSessionDictionary[url].Item2;
             }
             else
             {
@@ -75,9 +76,9 @@ namespace URLdata.Data
         /// </returns>
         public int GetUniqueSites(string visitorId)
         {
-            if (userIdUniqueUrlVisits.ContainsKey(visitorId))
+            if (UserIdUniqueUrlVisits.ContainsKey(visitorId))
             {
-                return userIdUniqueUrlVisits[visitorId].Count;
+                return UserIdUniqueUrlVisits[visitorId].Count;
             }
 
             return -1;
@@ -100,21 +101,21 @@ namespace URLdata.Data
         public double GetMedian(string url)
         {
             
-            if (!urlSessionDictionary.ContainsKey(url))
+            if (!UrlSessionDictionary.ContainsKey(url))
             {
                 throw new KeyNotFoundException("Could not find record");
             }
-            if (mediansCalculated.ContainsKey(url))
+            if (MediansCalculated.ContainsKey(url))
             {
-                return mediansCalculated[url];
+                return MediansCalculated[url];
             }
             //calculating median of sessions length and update the value in the medians map
-            var lengths = urlSessionDictionary[url].Item3;
+            var lengths = UrlSessionDictionary[url].Item3;
             lengths.Sort();
             int lengthsSize = lengths.Count;
             int midElement = lengthsSize / 2;
             double median = (lengthsSize % 2 != 0) ? lengths[midElement] : ((double)lengths[midElement] + lengths[midElement - 1]) / 2;
-            mediansCalculated[url] = median;
+            MediansCalculated[url] = median;
             return median;
         }
     }
