@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using URLdata.Data;
@@ -19,10 +18,11 @@ namespace URLdata.Controllers
         }
 
         [HttpGet("sessions_amount/{url}")]
-        public  async Task<ActionResult<int>> GetSessionAmount(string url)
+        public async Task<ActionResult<int>> GetSessionAmount(string url)
         {
             try
             {
+                //TODO: remove the task.run and change the IDataHandler methods to async.
                 var sessionsAmount = await Task.Run(()=>  _dataManager.GetSessionsAmount(url));
                 return Ok(sessionsAmount);
             }

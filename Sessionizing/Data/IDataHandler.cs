@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace URLdata.Data
 {
     /// <summary>
@@ -5,7 +7,7 @@ namespace URLdata.Data
     /// </summary>
     public interface IDataHandler
     {
-        public int GetSessionsAmount(string url);
+        public Task<int> GetSessionsAmount(string url);
 
         public int GetUniqueSites(string visitorId);
 
