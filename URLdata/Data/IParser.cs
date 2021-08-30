@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using URLdata.Models;
 
 namespace URLdata.Data
@@ -14,6 +15,7 @@ namespace URLdata.Data
         }
         public Dictionary<string, HashSet<string>>  UserIdUniqueUrlVisits { get; set; }
         public void Parse();
+        public Task ParseAsync();
         
 
     }

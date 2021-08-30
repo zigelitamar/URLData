@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using URLdata.Exceptions;
 using URLdata.Models;
@@ -106,9 +107,82 @@ namespace URLdata.Data
                 PromoteIterator(csvFilesIterators, timeStampsList, indexOfMinTimeStamp);
             }
 
-            this.UrlSessionDictionary = urlSessionDictionary;
-            this.UserIdUniqueUrlVisits = userIdUniqueUrlVisits;
+            UrlSessionDictionary = urlSessionDictionary;
+            UserIdUniqueUrlVisits = userIdUniqueUrlVisits;
             Console.WriteLine("DONE PROCESSING");
+        }
+
+        public Task ParseAsync()
+        {
+              // get iterators list
+            List<IEnumerator<PageView>> csvFilesIterators = null;
+            try
+            {
+                 csvFilesIterators  = _reader.ReadData();
+            }
+            catch (FileLoadException e)
+            {
+                Console.WriteLine(e);
+                throw new ParsingException();
+            }
+            
+            // checks if the list is not empty (no csv files)
+            if(csvFilesIterators == null || csvFilesIterators.Count == 0)
+            {
+                throw new NullReferenceException($"iterators list is null or empty.");
+            }
+            
+            // create a list of the current timestamp of each iterator.
+            List<long> timeStampsList = new List<long>();
+            
+            // get the timestamp of each iterator (if the csv file is empty/no records in the csv file - remove the iterator)
+            GetFirstTimeStamps(csvFilesIterators, timeStampsList);
+
+            // initial the data structures to save the necessary data from the csv files.
+            Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> urlSessionDictionary = new Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>>(); 
+            Dictionary<string, HashSet<string>>  userIdUniqueUrlVisits = new Dictionary<string, HashSet<string>>();
+            
+            // iterate on chronologically (by time stamps) on all iterators together.
+            while (csvFilesIterators.Count != 0)
+            {
+                //get index of the minimal timestamp between all iterators anf its record.
+                var minTimeStamp = timeStampsList.Min();
+                var indexOfMinTimeStamp = timeStampsList.IndexOf(minTimeStamp);
+                var currentPageView = csvFilesIterators[indexOfMinTimeStamp].Current;
+                
+                string visitorId = currentPageView.visitor;
+
+                AddUrlToVisitor(visitorId, userIdUniqueUrlVisits, currentPageView);
+
+                //check if the current url exist in the dictionary
+                if (urlSessionDictionary.ContainsKey(currentPageView.mainUrl))
+                {
+                    //check if the current visitor already have a session for the current url
+                    if (urlSessionDictionary[currentPageView.mainUrl].Item1.ContainsKey(currentPageView.visitor))
+                    {
+                       UpdateVisitorSessions(urlSessionDictionary, currentPageView);
+                    }
+                    else // the current visitor page view is its first appearance
+                    {
+                        InitialFirstVisitorSession(urlSessionDictionary, currentPageView);
+                    }
+                }
+                else //url not exist yet in the data structure -> set first session timestamp, set sessions counter to 1, initial new list for sessions lengths
+                {
+                    Dictionary<string, Session> visitorSessionDictionary = new Dictionary<string, Session>();
+                    visitorSessionDictionary[currentPageView.visitor] = new Session(currentPageView.timestamp);
+                    
+                    urlSessionDictionary[currentPageView.mainUrl] = Tuple.Create(visitorSessionDictionary, 1, new List<long>());
+                }
+
+                // promote the chosen iterator with the minimal time stamp
+                PromoteIterator(csvFilesIterators, timeStampsList, indexOfMinTimeStamp);
+            }
+
+            UrlSessionDictionary = urlSessionDictionary;
+            UserIdUniqueUrlVisits = userIdUniqueUrlVisits;
+            Console.WriteLine("DONE PROCESSING");
+
         }
 
         /// <summary>

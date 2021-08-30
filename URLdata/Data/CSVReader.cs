@@ -17,6 +17,7 @@ namespace URLdata.Data
     {
         private readonly string _directoryPath;
         private List<string> CSVfilesList = new List<string>();
+ 
 
         /// <summary>
         /// Constructor.
@@ -31,6 +32,8 @@ namespace URLdata.Data
         {
    
             _directoryPath = path;
+          
+
         }
         
         /// <summary>
@@ -65,6 +68,33 @@ namespace URLdata.Data
             }
 
             return allPageViewsListsIterators;
+        }
+
+        public  List<IAsyncEnumerator<PageView>> ReadDataAsync()
+        {
+            CSVfilesList = GetCsvFileNames();
+            if (CSVfilesList == null)
+            {
+                throw new FileLoadException();
+            }
+
+            var allPageViewsLists = new List<IAsyncEnumerator<PageView>>();
+
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                HasHeaderRecord = false,
+            };
+            
+            foreach (var currentCsvFileName in CSVfilesList)
+            {
+                var reader = new StreamReader(currentCsvFileName);
+                var csv = new CsvReader(reader, config);
+                
+                var pageViewsListIterator =   csv.GetRecordsAsync<PageView>();
+                allPageViewsLists.Add(pageViewsListIterator.GetAsyncEnumerator());
+            }
+
+            return  allPageViewsLists;
         }
 
         /// <summary>

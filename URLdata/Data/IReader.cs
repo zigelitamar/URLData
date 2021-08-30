@@ -9,5 +9,6 @@ namespace URLdata.Data
     public interface IReader
     {
         public List<IEnumerator<PageView>> ReadData();
+        public List<IAsyncEnumerator<PageView>> ReadDataAsync();
     }
 }
