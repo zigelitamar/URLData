@@ -13,10 +13,10 @@ namespace URLdata.Data
     /// Reader class for CSV files.
     /// Implements the IReader interface.
     /// </summary>
-    public class CSVReader : IReader
+    public class CsvReader : IReader
     {
-        private string directoryPath;
-        private List<string> CSVfilesList = new List<string>();
+        private readonly string _directoryPath;
+        private List<string> _csvFilesList = new List<string>();
 
         /// <summary>
         /// Constructor.
@@ -27,10 +27,10 @@ namespace URLdata.Data
         /// string argument - a path to the directory where the
         /// CSV files located in.
         /// </param>
-        public CSVReader(string path)
+        public CsvReader(string path)
         {
    
-            directoryPath = path;
+            _directoryPath = path;
         }
         
         /// <summary>
@@ -43,8 +43,10 @@ namespace URLdata.Data
         /// </returns>
         public List<IEnumerator<PageView>> ReadData()
         {
-            CSVfilesList = GetCsvFileNames();
-            if (CSVfilesList == null)
+            //TODO: * * * check about IEnumerableAsync and change. * * *
+            
+            _csvFilesList = GetCsvFileNames();
+            if (_csvFilesList == null)
             {
                 throw new FileLoadException();
             }
@@ -55,10 +57,10 @@ namespace URLdata.Data
                 HasHeaderRecord = false,
             };
             
-            foreach (var currentCSVFileName in this.CSVfilesList)
+            foreach (var currentCsvFileName in this._csvFilesList)
             {
-                var reader = new StreamReader(currentCSVFileName);
-                var csv = new CsvReader(reader, config);
+                var reader = new StreamReader(currentCsvFileName);
+                var csv = new CsvHelper.CsvReader(reader, config);
                 
                 IEnumerable<PageView> pageViewsListIterator = csv.GetRecords<PageView>();
                 allPageViewsListsIterators.Add(pageViewsListIterator.GetEnumerator());
@@ -80,9 +82,9 @@ namespace URLdata.Data
 
             try
             {
-                return Directory.GetFiles(directoryPath, "*.csv").ToList();
+                return Directory.GetFiles(_directoryPath, "*.csv").ToList();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.WriteLine("Either reading files not Exist or you dont have permissions for the reading files");
                 return null;

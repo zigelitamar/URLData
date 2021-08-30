@@ -18,7 +18,7 @@ namespace SessionzingXUnitTests
             string path = Path.Combine(Directory.GetCurrentDirectory(), "TestFolder/");
 
             // creating a CSVReader
-            CSVReader csvReader = new CSVReader(path);
+            CsvReader csvReader = new CsvReader(path);
         }
 
         /// <summary>

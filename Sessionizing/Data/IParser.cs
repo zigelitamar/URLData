@@ -9,7 +9,8 @@ namespace URLdata.Data
     /// </summary>
     public interface IParser
     {
-        public Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> UrlSessionDictionary { get;
+        public Dictionary<string, (Dictionary<string, Session> userSessions, int sessionsCounter, List<long>
+            allUrlSessionsList)> UrlSessionDictionary { get;
             set;
         }
         public Dictionary<string, HashSet<string>>  UserIdUniqueUrlVisits { get; set; }

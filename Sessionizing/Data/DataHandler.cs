@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using URLdata.Models;
 using MathNet.Numerics.Statistics;
 
@@ -13,12 +14,11 @@ namespace URLdata.Data
     /// </summary>
     public class DataHandler : IDataHandler
     {
-        private readonly IParser _parser;
-        public Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> UrlSessionDictionary { get; }
+        public Dictionary<string, (Dictionary<string, Session> userSessions, int sessionsCounter, List<long> allUrlSessionsList)> urlSessionDictionary { get; }
 
-        public Dictionary<string, HashSet<string>>  UserIdUniqueUrlVisits { get; }
+        public Dictionary<string, HashSet<string>>  userIdUniqueUrlVisits { get; }
 
-        public Dictionary<string, double > MediansCalculated { get; }
+        public Dictionary<string, double > mediansCalculated { get; }
 
 
 
@@ -34,10 +34,10 @@ namespace URLdata.Data
         /// </param>
         public DataHandler(IParser parser)
         {
-            _parser = parser;
-            MediansCalculated = new Dictionary<string, double>();
-            UrlSessionDictionary = _parser.UrlSessionDictionary;
-            UserIdUniqueUrlVisits = _parser.UserIdUniqueUrlVisits;
+            var parser1 = parser;
+            mediansCalculated = new Dictionary<string, double>();
+            urlSessionDictionary = parser1.UrlSessionDictionary;
+            userIdUniqueUrlVisits = parser1.UserIdUniqueUrlVisits;
 
         }
         
@@ -52,18 +52,16 @@ namespace URLdata.Data
         /// <exception cref="KeyNotFoundException">
         ///  An exception if the given url in not exists. 
         /// </exception>
-        public int GetSessionsAmount(string url)
+        public async Task<int> GetSessionsAmount(string url)
         {
-            if (UrlSessionDictionary.ContainsKey(url))
+            if (urlSessionDictionary.TryGetValue(key: url, value: out var currentUrlValue))
             {
-                return UrlSessionDictionary[url].Item2;
+                return currentUrlValue.sessionsCounter;
             }
-            else
-            {
-                throw new KeyNotFoundException("no records found");
-            }
-            
+
+            throw new KeyNotFoundException("no records found");
         }
+        
         /// <summary>
         /// The method returns the amount of unique websites
         /// a given visitor has visited.
@@ -76,11 +74,10 @@ namespace URLdata.Data
         /// </returns>
         public int GetUniqueSites(string visitorId)
         {
-            if (UserIdUniqueUrlVisits.ContainsKey(visitorId))
+            if (userIdUniqueUrlVisits.TryGetValue(key: visitorId, value: out var visitorUniqueUrlsVisits))
             {
-                return UserIdUniqueUrlVisits[visitorId].Count;
+                return visitorUniqueUrlsVisits.Count;
             }
-
             return -1;
         }
 
@@ -100,22 +97,23 @@ namespace URLdata.Data
         /// <exception cref="KeyNotFoundException"></exception>
         public double GetMedian(string url)
         {
-            
-            if (!UrlSessionDictionary.ContainsKey(url))
+            if (!urlSessionDictionary.ContainsKey(url))
             {
                 throw new KeyNotFoundException("Could not find record");
             }
-            if (MediansCalculated.ContainsKey(url))
+            
+            if(mediansCalculated.TryGetValue(key: url, value: out var urlMedian))
             {
-                return MediansCalculated[url];
+                return urlMedian;
             }
+            
             //calculating median of sessions length and update the value in the medians map
-            var lengths = UrlSessionDictionary[url].Item3;
+            var lengths = urlSessionDictionary[url].allUrlSessionsList;
             lengths.Sort();
             int lengthsSize = lengths.Count;
             int midElement = lengthsSize / 2;
             double median = (lengthsSize % 2 != 0) ? lengths[midElement] : ((double)lengths[midElement] + lengths[midElement - 1]) / 2;
-            MediansCalculated[url] = median;
+            mediansCalculated[url] = median;
             return median;
 
         }

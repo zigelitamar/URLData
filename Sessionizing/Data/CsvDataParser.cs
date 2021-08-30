@@ -1,12 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using Microsoft.AspNetCore.Authentication;
 using URLdata.Exceptions;
 using URLdata.Models;
-using Xunit.Sdk;
 
 namespace URLdata.Data
 {
@@ -17,9 +13,8 @@ namespace URLdata.Data
     public class CsvDataParser : IParser
     {
         private readonly IReader _reader;
-        public Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> UrlSessionDictionary { get;
-            set;
-        }
+
+        public Dictionary<string, (Dictionary<string, Session> userSessions, int sessionsCounter, List<long> allUrlSessionsList)> UrlSessionDictionary { get; set; }
         public Dictionary<string, HashSet<string>>  UserIdUniqueUrlVisits  { get; set; }
         
         /// <summary>
@@ -63,22 +58,20 @@ namespace URLdata.Data
                 throw new NullReferenceException($"iterators list is null or empty.");
             }
             
-            // create a list of the current timestamp of each iterator.
-            List<long> timeStampsList = new List<long>();
             
-            // get the timestamp of each iterator (if the csv file is empty/no records in the csv file - remove the iterator)
-            GetFirstTimeStamps(csvFilesIterators, timeStampsList);
+            // set iterators to point for the first record (if the csv file is empty/no records in the csv file - remove the iterator)
+            InitialIterators(csvFilesIterators);
 
             // initial the data structures to save the necessary data from the csv files.
-            Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> urlSessionDictionary = new Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>>(); 
+            Dictionary<string, (Dictionary<string, Session> userSessions, int sessionsCounter, List<long> allUrlSessionsList)> urlSessionDictionary = new Dictionary<string,(Dictionary<string, Session>, int, List<long>)>(); 
             Dictionary<string, HashSet<string>>  userIdUniqueUrlVisits = new Dictionary<string, HashSet<string>>();
             
             // iterate on chronologically (by time stamps) on all iterators together.
             while (csvFilesIterators.Count != 0)
             {
                 //get index of the minimal timestamp between all iterators anf its record.
-                var minTimeStamp = timeStampsList.Min();
-                var indexOfMinTimeStamp = timeStampsList.IndexOf(minTimeStamp);
+                var indexOfMinTimeStamp = GetMinTimeStampIndex(csvFilesIterators);
+                
                 var currentPageView = csvFilesIterators[indexOfMinTimeStamp].Current;
                 
                 string visitorId = currentPageView.visitor;
@@ -86,28 +79,33 @@ namespace URLdata.Data
                 AddUrlToVisitor(visitorId, userIdUniqueUrlVisits, currentPageView);
 
                 //check if the current url exist in the dictionary
-                if (urlSessionDictionary.ContainsKey(currentPageView.mainUrl))
+                if (urlSessionDictionary.TryGetValue(key: currentPageView.mainUrl, value: out var currentUrlValue))
                 {
                     //check if the current visitor already have a session for the current url
-                    if (urlSessionDictionary[currentPageView.mainUrl].Item1.ContainsKey(currentPageView.visitor))
+                    if (currentUrlValue.userSessions.TryGetValue(key: currentPageView.visitor, value: out var currentVisitorSession))
                     {
-                       UpdateVisitorSessions(urlSessionDictionary, currentPageView);
+                        UpdateVisitorSessions(urlSessionDictionary, currentPageView, currentUrlValue, currentVisitorSession);
                     }
                     else // the current visitor page view is its first appearance
                     {
-                        InitialFirstVisitorSession(urlSessionDictionary, currentPageView);
+                        InitialFirstVisitorSession(urlSessionDictionary, currentUrlValue, currentPageView);
                     }
                 }
                 else //url not exist yet in the data structure -> set first session timestamp, set sessions counter to 1, initial new list for sessions lengths
                 {
-                    Dictionary<string, Session> visitorSessionDictionary = new Dictionary<string, Session>();
-                    visitorSessionDictionary[currentPageView.visitor] = new Session(currentPageView.timestamp);
+                    Dictionary<string, Session> visitorSessionDictionary = new Dictionary<string, Session>
+                    {
+                        [currentPageView.visitor] = new Session(currentPageView.timestamp)
+                    };
                     
-                    urlSessionDictionary[currentPageView.mainUrl] = Tuple.Create(visitorSessionDictionary, 1, new List<long>());
+                    urlSessionDictionary[currentPageView.mainUrl] = (visitorSessionDictionary, 1, new List<long>());
                 }
 
-                // promote the chosen iterator with the minimal time stamp
-                PromoteIterator(csvFilesIterators, timeStampsList, indexOfMinTimeStamp);
+                // promote the chosen iterator with the minimal time stamp. if the chosen iterator finished iterating all records - remove it from list.
+                if (!csvFilesIterators[indexOfMinTimeStamp].MoveNext())
+                {
+                    csvFilesIterators.RemoveAt(indexOfMinTimeStamp);
+                }
             }
 
             this.UrlSessionDictionary = urlSessionDictionary;
@@ -116,33 +114,30 @@ namespace URLdata.Data
         }
 
         /// <summary>
-        /// The method promote the iterator with the minimal timestamp
-        /// and checks if this current iterator reached to its end.
-        /// If it does - remove the iterator from the iterators list and and its timestamp
-        /// from the the timestamps list as well.
+        ///  The method return the index from the iterator list with
+        ///  the minimal Time Stamp value.
         /// </summary>
         /// <param name="csvFilesIterators">
-        /// All iterators list.
+        ///  list of IEnumerator containing all the iterators.
         /// </param>
-        /// <param name="timeStampsList">
-        /// All current iterators time stamps.
-        /// </param>
-        /// <param name="indexOfMinTimeStamp">
-        /// The index of the iterator with the minimal time stamp.
-        /// </param>
-        private void PromoteIterator(List<IEnumerator<PageView>> csvFilesIterators, List<long> timeStampsList, int indexOfMinTimeStamp)
+        /// <returns>
+        /// int - the index with the minimal Time Stamp value.
+        /// </returns>
+        private static int GetMinTimeStampIndex(IReadOnlyList<IEnumerator<PageView>> csvFilesIterators)
         {
-            if (!csvFilesIterators[indexOfMinTimeStamp].MoveNext())
+            var minTimeStamp = csvFilesIterators[0].Current.timestamp;
+            var indexOfMinTimeStamp = 0;
+            for(var i = 0; i < csvFilesIterators.Count; i++)
             {
-                csvFilesIterators.RemoveAt(indexOfMinTimeStamp);
-                timeStampsList.RemoveAt(indexOfMinTimeStamp);
+                if (csvFilesIterators[i].Current.timestamp < minTimeStamp)
+                {
+                    minTimeStamp = csvFilesIterators[i].Current.timestamp;
+                    indexOfMinTimeStamp = i;
+                }
             }
-            else
-            {
-                timeStampsList[indexOfMinTimeStamp] =
-                    csvFilesIterators[indexOfMinTimeStamp].Current.timestamp;
-            }
+            return indexOfMinTimeStamp;
         }
+
 
         /// <summary>
         /// The method initial the the first session of a visitor entring a new
@@ -151,21 +146,22 @@ namespace URLdata.Data
         /// <param name="urlSessionDictionary">
         /// The data structure of the urls sessions.
         /// </param>
+        /// <param name="currentUrlValue">
+        /// The Tuple value of the url key.
+        /// </param>
         /// <param name="currentPageView">
         /// The current PageView record with the minimal time stamp.
         /// </param>
-        private void InitialFirstVisitorSession(Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> urlSessionDictionary, PageView currentPageView)
+        private void InitialFirstVisitorSession(Dictionary<string, (Dictionary<string, Session> userSessions, int sessionsCounter, List<long> allUrlSessionsList)> urlSessionDictionary,
+            (Dictionary<string, Session> userSessions, int sessionsCounter, List<long> allUrlSessionsList) currentUrlValue, PageView currentPageView)
         {
-            // set to the user a new session
-            Dictionary<string, Session> visitorSessionDictionary = urlSessionDictionary[currentPageView.mainUrl].Item1;
-            visitorSessionDictionary[currentPageView.visitor] = new Session(currentPageView.timestamp);
-                        
+            // set to the visitor a new session
+            currentUrlValue.userSessions[currentPageView.visitor] = new Session(currentPageView.timestamp);
+            
             // get  the session counter and increment it
-            int sessionCounter = urlSessionDictionary[currentPageView.mainUrl].Item2 + 1;
-                        
-            List<long> sessionsLengthList = urlSessionDictionary[currentPageView.mainUrl].Item3;
-                        
-            urlSessionDictionary[currentPageView.mainUrl] = Tuple.Create(visitorSessionDictionary, sessionCounter, sessionsLengthList);
+            int sessionCounter = currentUrlValue.sessionsCounter + 1;
+            
+            urlSessionDictionary[currentPageView.mainUrl] = (currentUrlValue.userSessions, sessionCounter, currentUrlValue.allUrlSessionsList);
         }
 
         /// <summary>
@@ -180,59 +176,44 @@ namespace URLdata.Data
         /// <param name="currentPageView">
         /// The current PageView record with the minimal time stamp.
         /// </param>
-        private void UpdateVisitorSessions(Dictionary<string, Tuple<Dictionary<string, Session>, int, List<long>>> urlSessionDictionary, PageView currentPageView)
+        /// <param name="currentUrlValue"></param>
+        /// <param name="currentVisitorSession"></param>
+        private void UpdateVisitorSessions(Dictionary<string, (Dictionary<string, Session> userSessions, int sessionsCounter, List<long>
+            allUrlSessionsList)> urlSessionDictionary, PageView currentPageView, (Dictionary<string, Session> userSessions, int sessionsCounter,
+            List<long> allUrlSessionsList) currentUrlValue, Session currentVisitorSession)
         {
-           long userLastSessionTimeStamp = urlSessionDictionary[currentPageView.mainUrl]
-                        .Item1[currentPageView.visitor].endTime;
 
-            //check if the current page view belong to the last session (no longer than 30 minute).
-            if (currentPageView.timestamp - userLastSessionTimeStamp <= (30 * 60))
+            if (currentPageView.timestamp - currentVisitorSession.endTime <= (30 * 60))
             {
-                //update the last time stamp of the current session.
-                urlSessionDictionary[currentPageView.mainUrl]
-                    .Item1[currentPageView.visitor].endTime = currentPageView.timestamp;
+                currentVisitorSession.endTime = currentPageView.timestamp;
             }
             else
             {
-                // get the start session
-                long userStartSessionTimeStamp = urlSessionDictionary[currentPageView.mainUrl]
-                    .Item1[currentPageView.visitor].startTime;
-                
                 // add the session time to the sessions length list
-                List<long> sessionsLengthList = urlSessionDictionary[currentPageView.mainUrl].Item3;
-                sessionsLengthList.Add(userLastSessionTimeStamp - userStartSessionTimeStamp);
+                currentUrlValue.allUrlSessionsList.Add(currentVisitorSession.endTime - currentVisitorSession.startTime);
                 
-                //set the new session by the current page view.
-                Dictionary<string, Session> visitorSessionDictionary = urlSessionDictionary[currentPageView.mainUrl].Item1;
-                visitorSessionDictionary[currentPageView.visitor] = new Session(currentPageView.timestamp);
+                //reset the visitor session by the current page view.
+                currentVisitorSession.ResetSession(currentPageView.timestamp);
                 
                 // increment the counter of the sessions amount
-                int sessionCounter = urlSessionDictionary[currentPageView.mainUrl].Item2 + 1;
+                int sessionCounter = currentUrlValue.sessionsCounter + 1;
                 
-                urlSessionDictionary[currentPageView.mainUrl] = Tuple.Create(visitorSessionDictionary, sessionCounter, sessionsLengthList);
+                urlSessionDictionary[currentPageView.mainUrl] = (currentUrlValue.userSessions, sessionCounter, currentUrlValue.allUrlSessionsList);
             }
         }
 
         /// <summary>
-        /// The method get from all the iterators their first page view time stamps.
+        /// The method set all iterators to point for their first record.
+        /// If an iterator is empty (no records) - remove it form the iterators list.
         /// </summary>
         /// <param name="csvFilesIterators">
         /// All iterators list.
         /// </param>
-        /// <param name="timeStampsList">
-        /// all first time stamps from all the iterators.
-        /// </param>
-        private void GetFirstTimeStamps(List<IEnumerator<PageView>> csvFilesIterators, List<long> timeStampsList)
+        private static void InitialIterators(List<IEnumerator<PageView>> csvFilesIterators)
         {
             for (int i = 0; i < csvFilesIterators.Count; i++)
             {
-                if (csvFilesIterators[i].MoveNext())
-                {
-                    var pageView = csvFilesIterators[i].Current;
-                    if (pageView != null) timeStampsList.Add(pageView.timestamp);
-                    csvFilesIterators[i].MoveNext();
-                }
-                else
+                if (!csvFilesIterators[i].MoveNext())
                 {
                     csvFilesIterators.RemoveAt(i);
                 }
@@ -253,11 +234,14 @@ namespace URLdata.Data
         /// </param>
         private void AddUrlToVisitor(string visitorId, Dictionary<string, HashSet<string>> userIdUniqueUrlVisits, PageView currentPageView)
         {
-            if (!userIdUniqueUrlVisits.ContainsKey(visitorId))
+            if (userIdUniqueUrlVisits.TryGetValue(key: visitorId, value: out var userUniqueUrlsVisit))
+            {
+                userUniqueUrlsVisit.Add(currentPageView.mainUrl);
+            }
+            else
             {
                 userIdUniqueUrlVisits[visitorId] = new HashSet<string>();
             }
-            userIdUniqueUrlVisits[visitorId].Add(currentPageView.mainUrl);
         }
     }
 }
