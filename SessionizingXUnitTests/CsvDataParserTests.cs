@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using URLdata.Data;
 using URLdata.Models;
 using Xunit;
@@ -18,19 +19,20 @@ namespace SessionzingXUnitTests
             string path = Path.Combine(Directory.GetCurrentDirectory(), "TestFolder/");
 
             // creating a CSVReader
-            CsvReader csvReader = new CsvReader(path);
+            IReader csvReader = new CSVReader(path);
         }
 
         /// <summary>
         /// This test check if the class handle correctly a null argument.
         /// </summary>
         [Fact]
-        public void TestReadDataNullArgument()
+        public  void TestReadDataNullArgument()
         {
             IReader reader = null;
-            
-            var caughtException = Assert.Throws<NullReferenceException>(() => new CsvDataParser(reader).Parse());
-            Assert.Equal("IReader object is null", caughtException.Message);
+            var csvDataParser = new CsvDataParser(reader);
+
+            var caughtException = Assert.ThrowsAsync<NullReferenceException>( ()=> csvDataParser.Parse());
+            Assert.Equal("IReader object is null", caughtException.Result.Message);
         }
 
     }

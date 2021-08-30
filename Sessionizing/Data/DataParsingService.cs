@@ -19,8 +19,7 @@ namespace URLdata.Data
              Console.WriteLine("on start action");
              try
              {
-                 _parser.Parse();
-                 await Task.Delay(500);
+                 await _parser.Parse();
                  Console.WriteLine("Done parsing");
              }
              catch (ParsingException e)

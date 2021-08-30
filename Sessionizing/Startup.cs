@@ -1,5 +1,6 @@
 using System.Configuration;
 using System.IO;
+using CsvHelper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using URLdata.Data;
+using IParser = URLdata.Data.IParser;
+using IReader = URLdata.Data.IReader;
 
 namespace URLdata
 {
@@ -24,7 +27,7 @@ namespace URLdata
                 $"{ConfigurationManager.AppSettings["resource directory"]}");
 
             services.AddControllers();
-            services.AddSingleton<IReader>( reader => new CsvReader(directorPath));
+            services.AddSingleton<IReader>( reader => new CSVReader(directorPath));
             services.AddSingleton<IParser,CsvDataParser>();
             services.AddHostedService<DataParsingService>();
             services.AddSingleton<DataStatusMiddleware>();

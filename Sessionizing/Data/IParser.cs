@@ -15,8 +15,8 @@ namespace URLdata.Data
             set;
         }
         public Dictionary<string, HashSet<string>>  UserIdUniqueUrlVisits { get; set; }
-        public void Parse();
-        public Task ParseAsync();
+        public Task Parse();
+   
         
 
     }

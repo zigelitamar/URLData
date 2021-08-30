@@ -13,10 +13,10 @@ namespace URLdata.Data
     /// Reader class for CSV files.
     /// Implements the IReader interface.
     /// </summary>
-    public class CsvReader : IReader
+    public class CSVReader : IReader
     {
-        private readonly string _directoryPath;
-        private List<string> _csvFilesList = new List<string>();
+        private string directoryPath;
+        private List<string> CSVfilesList = new List<string>();
 
         /// <summary>
         /// Constructor.
@@ -27,10 +27,10 @@ namespace URLdata.Data
         /// string argument - a path to the directory where the
         /// CSV files located in.
         /// </param>
-        public CsvReader(string path)
+        public CSVReader(string path)
         {
    
-            _directoryPath = path;
+            directoryPath = path;
         }
         
         /// <summary>
@@ -43,10 +43,8 @@ namespace URLdata.Data
         /// </returns>
         public List<IEnumerator<PageView>> ReadData()
         {
-            //TODO: * * * check about IEnumerableAsync and change. * * *
-            
-            _csvFilesList = GetCsvFileNames();
-            if (_csvFilesList == null)
+            CSVfilesList = GetCsvFileNames();
+            if (CSVfilesList == null)
             {
                 throw new FileLoadException();
             }
@@ -57,13 +55,39 @@ namespace URLdata.Data
                 HasHeaderRecord = false,
             };
             
-            foreach (var currentCsvFileName in this._csvFilesList)
+            foreach (var currentCSVFileName in this.CSVfilesList)
             {
-                var reader = new StreamReader(currentCsvFileName);
-                var csv = new CsvHelper.CsvReader(reader, config);
+                var reader = new StreamReader(currentCSVFileName);
+                var csv = new CsvReader(reader, config);
                 
                 IEnumerable<PageView> pageViewsListIterator = csv.GetRecords<PageView>();
                 allPageViewsListsIterators.Add(pageViewsListIterator.GetEnumerator());
+            }
+
+            return allPageViewsListsIterators;
+        }
+
+        public List<IAsyncEnumerator<PageView>> ReadDataAsync()
+        {
+            CSVfilesList = GetCsvFileNames();
+            if (CSVfilesList == null)
+            {
+                throw new FileLoadException();
+            }
+            List<IAsyncEnumerator<PageView>> allPageViewsListsIterators = new  List<IAsyncEnumerator<PageView>>();
+            
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                HasHeaderRecord = false,
+            };
+            
+            foreach (var currentCSVFileName in this.CSVfilesList)
+            {
+                var reader = new StreamReader(currentCSVFileName);
+                var csv = new CsvReader(reader, config);
+                
+                IAsyncEnumerable<PageView> pageViewsListIterator = csv.GetRecordsAsync<PageView>();
+                allPageViewsListsIterators.Add(pageViewsListIterator.GetAsyncEnumerator());
             }
 
             return allPageViewsListsIterators;
@@ -82,9 +106,9 @@ namespace URLdata.Data
 
             try
             {
-                return Directory.GetFiles(_directoryPath, "*.csv").ToList();
+                return Directory.GetFiles(directoryPath, "*.csv").ToList();
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 Console.WriteLine("Either reading files not Exist or you dont have permissions for the reading files");
                 return null;

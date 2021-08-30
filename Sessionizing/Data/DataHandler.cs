@@ -56,7 +56,7 @@ namespace URLdata.Data
         {
             if (urlSessionDictionary.TryGetValue(key: url, value: out var currentUrlValue))
             {
-                return currentUrlValue.sessionsCounter;
+                return  currentUrlValue.sessionsCounter;
             }
 
             throw new KeyNotFoundException("no records found");

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using URLdata.Exceptions;
 using URLdata.Models;
 
@@ -34,17 +35,17 @@ namespace URLdata.Data
         /// and generates data structures to retrieve API requests as requested. 
         /// </summary>
         /// <exception cref="NullReferenceException"></exception>
-        public void Parse()
+        public async Task Parse()
         {
             if (_reader == null)
             {
                 throw new NullReferenceException("IReader object is null");
             }
             // get iterators list
-            List<IEnumerator<PageView>> csvFilesIterators = null;
+            List<IAsyncEnumerator<PageView>> csvFilesIterators = null;
             try
             {
-                 csvFilesIterators  = _reader.ReadData();
+                 csvFilesIterators  = _reader.ReadDataAsync();
             }
             catch (FileLoadException e)
             {
@@ -60,7 +61,7 @@ namespace URLdata.Data
             
             
             // set iterators to point for the first record (if the csv file is empty/no records in the csv file - remove the iterator)
-            InitialIterators(csvFilesIterators);
+            await InitialIterators(csvFilesIterators);
 
             // initial the data structures to save the necessary data from the csv files.
             Dictionary<string, (Dictionary<string, Session> userSessions, int sessionsCounter, List<long> allUrlSessionsList)> urlSessionDictionary = new Dictionary<string,(Dictionary<string, Session>, int, List<long>)>(); 
@@ -102,14 +103,14 @@ namespace URLdata.Data
                 }
 
                 // promote the chosen iterator with the minimal time stamp. if the chosen iterator finished iterating all records - remove it from list.
-                if (!csvFilesIterators[indexOfMinTimeStamp].MoveNext())
+                if (!await csvFilesIterators[indexOfMinTimeStamp].MoveNextAsync())
                 {
                     csvFilesIterators.RemoveAt(indexOfMinTimeStamp);
                 }
             }
 
-            this.UrlSessionDictionary = urlSessionDictionary;
-            this.UserIdUniqueUrlVisits = userIdUniqueUrlVisits;
+            UrlSessionDictionary = urlSessionDictionary;
+            UserIdUniqueUrlVisits = userIdUniqueUrlVisits;
             Console.WriteLine("DONE PROCESSING");
         }
 
@@ -123,7 +124,7 @@ namespace URLdata.Data
         /// <returns>
         /// int - the index with the minimal Time Stamp value.
         /// </returns>
-        private static int GetMinTimeStampIndex(IReadOnlyList<IEnumerator<PageView>> csvFilesIterators)
+        private static int GetMinTimeStampIndex(IReadOnlyList<IAsyncEnumerator<PageView>> csvFilesIterators)
         {
             var minTimeStamp = csvFilesIterators[0].Current.timestamp;
             var indexOfMinTimeStamp = 0;
@@ -209,14 +210,14 @@ namespace URLdata.Data
         /// <param name="csvFilesIterators">
         /// All iterators list.
         /// </param>
-        private static void InitialIterators(List<IEnumerator<PageView>> csvFilesIterators)
+        private  async  Task InitialIterators(List<IAsyncEnumerator<PageView>> csvFilesIterators)
         {
             for (int i = 0; i < csvFilesIterators.Count; i++)
             {
-                if (!csvFilesIterators[i].MoveNext())
-                {
-                    csvFilesIterators.RemoveAt(i);
-                }
+                 if (!await csvFilesIterators[i].MoveNextAsync())
+                 {
+                     csvFilesIterators.RemoveAt(i);
+                 }
             }
         }
         

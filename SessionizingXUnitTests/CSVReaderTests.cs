@@ -8,13 +8,13 @@ namespace SessionzingXUnitTests
 {
     public class ReaderTests
     {
-        private readonly CsvReader _sutCsvReader;
+        private readonly CSVReader _sutCsvReader;
 
         public ReaderTests()
         {
             string directoryPath = Path.Combine(Directory.GetCurrentDirectory(), $"TestFolder");
             
-            this._sutCsvReader = new CsvReader(directoryPath);
+            _sutCsvReader = new CSVReader(directoryPath);
         }
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace SessionzingXUnitTests
         [InlineData(null)]
         public void TestPath2(string path)
         {
-            var caughtException = Assert.Throws<DirectoryNotFoundException>(() => new CsvReader(path).ReadData());
+            var caughtException = Assert.Throws<DirectoryNotFoundException>(() => new CSVReader(path).ReadData());
             Assert.Equal(caughtException.Message,
                 $"Directory path: {path} is invalid.\n Please insert an existing directory path.");
             
@@ -42,7 +42,7 @@ namespace SessionzingXUnitTests
         public void TestNoCsvFilesInPath()
         {
             string noCsvFilesDirectoryPath = Directory.GetCurrentDirectory();
-            var caughtException = Assert.Throws<FileNotFoundException>(() => new CsvReader(noCsvFilesDirectoryPath).ReadData());
+            var caughtException = Assert.Throws<FileNotFoundException>(() => new CSVReader(noCsvFilesDirectoryPath).ReadData());
             Assert.Equal(caughtException.Message,
                 $"There are no CSV files in the given directory path: {noCsvFilesDirectoryPath}");
         }
@@ -57,7 +57,7 @@ namespace SessionzingXUnitTests
         public void TestUnauthorizedFiles()
         {
             string unauthorizedFileDirectory = Path.Combine(Directory.GetCurrentDirectory(), "TestFolder/UnauthorizedCSVFiles");
-            var caughtException = Assert.Throws<UnauthorizedAccessException>(() => new CsvReader(unauthorizedFileDirectory).ReadData());
+            var caughtException = Assert.Throws<UnauthorizedAccessException>(() => new CSVReader(unauthorizedFileDirectory).ReadData());
             Assert.Equal(caughtException.Message,
                 $"Cannot access the file: input_1.csv.");
         }
