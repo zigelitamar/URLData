@@ -15,9 +15,8 @@ namespace URLdata.Data
     /// </summary>
     public class CSVReader : IReader
     {
-        private readonly string _directoryPath;
+        private string directoryPath;
         private List<string> CSVfilesList = new List<string>();
- 
 
         /// <summary>
         /// Constructor.
@@ -31,9 +30,7 @@ namespace URLdata.Data
         public CSVReader(string path)
         {
    
-            _directoryPath = path;
-          
-
+            directoryPath = path;
         }
         
         /// <summary>
@@ -58,43 +55,16 @@ namespace URLdata.Data
                 HasHeaderRecord = false,
             };
             
-            foreach (var currentCsvFileName in this.CSVfilesList)
+            foreach (var currentCSVFileName in this.CSVfilesList)
             {
-                var reader = new StreamReader(currentCsvFileName);
+                var reader = new StreamReader(currentCSVFileName);
                 var csv = new CsvReader(reader, config);
                 
-                var pageViewsListIterator = csv.GetRecords<PageView>();
+                IEnumerable<PageView> pageViewsListIterator = csv.GetRecords<PageView>();
                 allPageViewsListsIterators.Add(pageViewsListIterator.GetEnumerator());
             }
 
             return allPageViewsListsIterators;
-        }
-
-        public  List<IAsyncEnumerator<PageView>> ReadDataAsync()
-        {
-            CSVfilesList = GetCsvFileNames();
-            if (CSVfilesList == null)
-            {
-                throw new FileLoadException();
-            }
-
-            var allPageViewsLists = new List<IAsyncEnumerator<PageView>>();
-
-            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
-            {
-                HasHeaderRecord = false,
-            };
-            
-            foreach (var currentCsvFileName in CSVfilesList)
-            {
-                var reader = new StreamReader(currentCsvFileName);
-                var csv = new CsvReader(reader, config);
-                
-                var pageViewsListIterator =   csv.GetRecordsAsync<PageView>();
-                allPageViewsLists.Add(pageViewsListIterator.GetAsyncEnumerator());
-            }
-
-            return  allPageViewsLists;
         }
 
         /// <summary>
@@ -110,7 +80,7 @@ namespace URLdata.Data
 
             try
             {
-                return Directory.GetFiles(_directoryPath, "*.csv").ToList();
+                return Directory.GetFiles(directoryPath, "*.csv").ToList();
             }
             catch (Exception e)
             {

@@ -31,24 +31,17 @@ namespace URLdata
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            var directorPath = "";
-            try
-            {
-                directorPath = Path.Combine(Directory.GetCurrentDirectory(),
-                    $"{ConfigurationManager.AppSettings["resource directory"]}");
-            }
-            catch (Exception e)
-            {
-                throw new FileNotFoundException("repository dose not exist!");
-            }
-    
+            // get path from app.config file.
+            var directorPath = Path.Combine(Directory.GetCurrentDirectory(),
+                $"{ConfigurationManager.AppSettings["resource directory"]}");
+
             services.AddControllers();
             services.AddSingleton<IReader>( reader => new CSVReader(directorPath));
             services.AddSingleton<IParser,CsvDataParser>();
             services.AddHostedService<DataParsingService>();
             services.AddSingleton<DataStatusMiddleware>();
             services.AddSingleton<IDataHandler,DataHandler>();
-            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "URLdata", Version = "v1"}); });
+            services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Sessionizing", Version = "v1"}); });
         }
 
  
@@ -59,7 +52,7 @@ namespace URLdata
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "URLdata v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sessionizing v1"));
             }
 
             app.UseMiddleware<DataStatusMiddleware>();
