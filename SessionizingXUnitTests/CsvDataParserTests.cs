@@ -6,13 +6,10 @@ using URLdata.Data;
 using URLdata.Models;
 using Xunit;
 
-namespace SessionzingXUnitTests
+namespace SessionizingXUnitTests
 {
     public class CsvDataParserTests
     {
-        public readonly CsvDataParser _sutParser;
-        
-        
         public CsvDataParserTests()
         {
             // real path
@@ -28,9 +25,7 @@ namespace SessionzingXUnitTests
         [Fact]
         public  void TestReadDataNullArgument()
         {
-            IReader reader = null;
-            var csvDataParser = new CsvDataParser(reader);
-
+            var csvDataParser = new CsvDataParser(null);
             var caughtException = Assert.ThrowsAsync<NullReferenceException>( ()=> csvDataParser.Parse());
             Assert.Equal("IReader object is null", caughtException.Result.Message);
         }

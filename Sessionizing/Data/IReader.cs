@@ -8,7 +8,7 @@ namespace URLdata.Data
     /// </summary>
     public interface IReader
     {
-        public List<IEnumerator<PageView>> ReadData();
-        public List<IAsyncEnumerator<PageView>> ReadDataAsync();
+        public List<IAsyncEnumerator<PageView>> ReadData();
+
     }
 }

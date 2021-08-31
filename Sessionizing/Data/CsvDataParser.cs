@@ -41,11 +41,12 @@ namespace URLdata.Data
             {
                 throw new NullReferenceException("IReader object is null");
             }
+            
             // get iterators list
             List<IAsyncEnumerator<PageView>> csvFilesIterators = null;
             try
             {
-                 csvFilesIterators  = _reader.ReadDataAsync();
+                 csvFilesIterators  =  _reader.ReadData();
             }
             catch (FileLoadException e)
             {

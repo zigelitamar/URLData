@@ -9,8 +9,8 @@ namespace URLdata.Data
     {
         public Task<int> GetSessionsAmount(string url);
 
-        public int GetUniqueSites(string visitorId);
+        public Task<int> GetUniqueSites(string visitorId);
 
-        public double GetMedian(string url);
+        public Task<double> GetMedian(string url);
     }
 }

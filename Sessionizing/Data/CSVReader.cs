@@ -15,8 +15,8 @@ namespace URLdata.Data
     /// </summary>
     public class CSVReader : IReader
     {
-        private string directoryPath;
-        private List<string> CSVfilesList = new List<string>();
+        private readonly string _directoryPath;
+        private List<string> _csvFilesList = new List<string>();
 
         /// <summary>
         /// Constructor.
@@ -30,7 +30,7 @@ namespace URLdata.Data
         public CSVReader(string path)
         {
    
-            directoryPath = path;
+            _directoryPath = path;
         }
         
         /// <summary>
@@ -41,52 +41,44 @@ namespace URLdata.Data
         /// <returns>
         /// The method return a list of iterators for each of the CSV files.
         /// </returns>
-        public List<IEnumerator<PageView>> ReadData()
+        public List<IAsyncEnumerator<PageView>> ReadData()
         {
-            CSVfilesList = GetCsvFileNames();
-            if (CSVfilesList == null)
+            if (_directoryPath == null || !Directory.Exists(_directoryPath))
+            {
+                throw new DirectoryNotFoundException($"Directory path: {_directoryPath} is invalid.\n Please insert an existing directory path.");
+            }
+            
+            // get all csv files in the given directory path
+            GetCsvFileNames();
+            
+            if (_csvFilesList == null)
             {
                 throw new FileLoadException();
             }
-            List<IEnumerator<PageView>> allPageViewsListsIterators = new List<IEnumerator<PageView>>();
+            
+            List<IAsyncEnumerator<PageView>> allPageViewsListsIterators = new List<IAsyncEnumerator<PageView>>();
             
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HasHeaderRecord = false,
             };
             
-            foreach (var currentCSVFileName in this.CSVfilesList)
+            foreach (var currentCsvFileName in this._csvFilesList)
             {
-                var reader = new StreamReader(currentCSVFileName);
+                StreamReader reader;
+                
+                try
+                {
+                    reader = new StreamReader(currentCsvFileName);
+                }
+                catch (UnauthorizedAccessException exception)
+                {
+                    throw new UnauthorizedAccessException($"Cannot access the file: {currentCsvFileName.Substring(currentCsvFileName.LastIndexOf("/") + 1)}.");
+                }
+
                 var csv = new CsvReader(reader, config);
                 
-                IEnumerable<PageView> pageViewsListIterator = csv.GetRecords<PageView>();
-                allPageViewsListsIterators.Add(pageViewsListIterator.GetEnumerator());
-            }
-
-            return allPageViewsListsIterators;
-        }
-
-        public List<IAsyncEnumerator<PageView>> ReadDataAsync()
-        {
-            CSVfilesList = GetCsvFileNames();
-            if (CSVfilesList == null)
-            {
-                throw new FileLoadException();
-            }
-            List<IAsyncEnumerator<PageView>> allPageViewsListsIterators = new  List<IAsyncEnumerator<PageView>>();
-            
-            var config = new CsvConfiguration(CultureInfo.InvariantCulture)
-            {
-                HasHeaderRecord = false,
-            };
-            
-            foreach (var currentCSVFileName in this.CSVfilesList)
-            {
-                var reader = new StreamReader(currentCSVFileName);
-                var csv = new CsvReader(reader, config);
-                
-                IAsyncEnumerable<PageView> pageViewsListIterator = csv.GetRecordsAsync<PageView>();
+                var pageViewsListIterator = csv.GetRecordsAsync<PageView>();
                 allPageViewsListsIterators.Add(pageViewsListIterator.GetAsyncEnumerator());
             }
 
@@ -101,17 +93,14 @@ namespace URLdata.Data
         /// The method returns a list of strings containing all the CSV files names
         /// in the given path.
         /// </returns>
-        private List<string> GetCsvFileNames()
+        private void GetCsvFileNames()
         {
 
-            try
+            _csvFilesList = Directory.GetFiles(_directoryPath, "*.csv").ToList();
+            if (_csvFilesList == null || _csvFilesList.Count == 0)
             {
-                return Directory.GetFiles(directoryPath, "*.csv").ToList();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Either reading files not Exist or you dont have permissions for the reading files");
-                return null;
+                throw new FileNotFoundException(
+                    $"There are no CSV files in the given directory path: {_directoryPath}");
             }
         }
     }

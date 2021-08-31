@@ -23,7 +23,7 @@ namespace URLdata.Controllers
             try
             {
                 //TODO: remove the task.run and change the IDataHandler methods to async.
-                var sessionsAmount = await Task.Run(()=>  _dataManager.GetSessionsAmount(url));
+                var sessionsAmount = await _dataManager.GetSessionsAmount(url);
                 return Ok(sessionsAmount);
             }
             catch (KeyNotFoundException e)
@@ -44,7 +44,7 @@ namespace URLdata.Controllers
             double median = 0;
             try
             {
-                median = await Task.Run(()=>_dataManager.GetMedian(url));
+                median = await _dataManager.GetMedian(url);
             }
             catch (KeyNotFoundException e)
             {

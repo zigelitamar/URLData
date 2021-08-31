@@ -4,7 +4,7 @@ using System.IO;
 using URLdata.Data;
 using Xunit;
 
-namespace SessionzingXUnitTests
+namespace SessionizingXUnitTests
 {
     public class ReaderTests
     {
@@ -21,13 +21,13 @@ namespace SessionzingXUnitTests
         /// This test check if the class raise DirectoryNotFoundException exception when a given path is not real
         /// given by the user.
         /// <example>
-        /// path = "users/this_path_not_really_exists"
+        /// path = "not_a_real_directory/"
         /// </example>
         /// </summary>
         [Theory]
         [InlineData("not_a_real_directory/")]
         [InlineData(null)]
-        public void TestPath2(string path)
+        public void TestDirectoryPath(string path)
         {
             var caughtException = Assert.Throws<DirectoryNotFoundException>(() => new CSVReader(path).ReadData());
             Assert.Equal(caughtException.Message,

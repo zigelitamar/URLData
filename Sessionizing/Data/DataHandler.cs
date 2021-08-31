@@ -59,7 +59,7 @@ namespace URLdata.Data
                 return  currentUrlValue.sessionsCounter;
             }
 
-            throw new KeyNotFoundException("no records found");
+            throw new KeyNotFoundException("No records found.");
         }
         
         /// <summary>
@@ -72,13 +72,13 @@ namespace URLdata.Data
         /// <returns>
         /// int - the amount of unique website the user has visited.
         /// </returns>
-        public int GetUniqueSites(string visitorId)
+        public async Task<int> GetUniqueSites(string visitorId)
         {
             if (userIdUniqueUrlVisits.TryGetValue(key: visitorId, value: out var visitorUniqueUrlsVisits))
             {
                 return visitorUniqueUrlsVisits.Count;
             }
-            return -1;
+            throw new KeyNotFoundException("No records found.");
         }
 
       
@@ -95,11 +95,11 @@ namespace URLdata.Data
         ///  double - the median of he given url.
         /// </returns>
         /// <exception cref="KeyNotFoundException"></exception>
-        public double GetMedian(string url)
+        public async Task<double> GetMedian(string url)
         {
             if (!urlSessionDictionary.ContainsKey(url))
             {
-                throw new KeyNotFoundException("Could not find record");
+                throw new KeyNotFoundException("No records found.");
             }
             
             if(mediansCalculated.TryGetValue(key: url, value: out var urlMedian))
