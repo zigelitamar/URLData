@@ -2,6 +2,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using URLdata.Data;
+using URLdata.Models;
 
 namespace URLdata.Controllers
 {
@@ -17,10 +18,10 @@ namespace URLdata.Controllers
             _dataManager = dataManager;
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<int>> UniqueSites(string id)
+        [HttpGet()]
+        public async Task<ActionResult<int>> UniqueSites([FromQuery]VisitorId visitor)
         {
-            var uniqueSites = await _dataManager.GetUniqueSites($"visitor_{id}");
+            var uniqueSites = await _dataManager.GetUniqueSites($"visitor_{visitor.visitorId}");
             return Ok(uniqueSites);
             
         }

@@ -2,10 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace URLdata.Models
 {
-    public class Url
+    public class VisitorId
     {
-
         [FromQuery] 
-        public string address { get; set; }
+        public int visitorId { get; set; }
     }
 }
