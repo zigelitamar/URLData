@@ -56,7 +56,7 @@ namespace URLdata.Data
                 throw new FileLoadException();
             }
             
-            List<IAsyncEnumerator<PageView>> allPageViewsListsIterators = new List<IAsyncEnumerator<PageView>>();
+            var allPageViewsListsIterators = new List<IAsyncEnumerator<PageView>>();
             
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {

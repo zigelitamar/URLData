@@ -52,11 +52,11 @@ namespace URLdata.Data
         /// <exception cref="KeyNotFoundException">
         ///  An exception if the given url in not exists. 
         /// </exception>
-        public async Task<int> GetSessionsAmount(string url)
+        public Task<int> GetSessionsAmount(string url)
         {
             if (urlSessionDictionary.TryGetValue(key: url, value: out var currentUrlValue))
             {
-                return  currentUrlValue.sessionsCounter;
+                return  Task.FromResult(currentUrlValue.sessionsCounter);
             }
 
             throw new KeyNotFoundException("No records found.");
@@ -72,11 +72,11 @@ namespace URLdata.Data
         /// <returns>
         /// int - the amount of unique website the user has visited.
         /// </returns>
-        public async Task<int> GetUniqueSites(string visitorId)
+        public  Task<int> GetUniqueSites(string visitorId)
         {
             if (userIdUniqueUrlVisits.TryGetValue(key: visitorId, value: out var visitorUniqueUrlsVisits))
             {
-                return visitorUniqueUrlsVisits.Count;
+                return Task.FromResult(visitorUniqueUrlsVisits.Count);
             }
             throw new KeyNotFoundException("No records found.");
         }
@@ -95,7 +95,7 @@ namespace URLdata.Data
         ///  double - the median of he given url.
         /// </returns>
         /// <exception cref="KeyNotFoundException"></exception>
-        public async Task<double> GetMedian(string url)
+        public  Task<double> GetMedian(string url)
         {
             if (!urlSessionDictionary.ContainsKey(url))
             {
@@ -104,17 +104,17 @@ namespace URLdata.Data
             
             if(mediansCalculated.TryGetValue(key: url, value: out var urlMedian))
             {
-                return urlMedian;
+                return Task.FromResult(urlMedian);
             }
             
             //calculating median of sessions length and update the value in the medians map
             var lengths = urlSessionDictionary[url].allUrlSessionsList;
             lengths.Sort();
-            int lengthsSize = lengths.Count;
-            int midElement = lengthsSize / 2;
-            double median = (lengthsSize % 2 != 0) ? lengths[midElement] : ((double)lengths[midElement] + lengths[midElement - 1]) / 2;
+            var lengthsSize = lengths.Count;
+            var midElement = lengthsSize / 2;
+            var median = (lengthsSize % 2 != 0) ? lengths[midElement] : ((double)lengths[midElement] + lengths[midElement - 1]) / 2;
             mediansCalculated[url] = median;
-            return median;
+            return Task.FromResult(median);
 
         }
     }

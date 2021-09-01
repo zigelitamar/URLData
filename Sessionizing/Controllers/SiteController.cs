@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using URLdata.Data;
+using URLdata.Filters;
+using URLdata.Models;
 
 namespace URLdata.Controllers
 {
@@ -16,42 +19,23 @@ namespace URLdata.Controllers
         {
             _dataManager = dataManager;
         }
+         
 
         [HttpGet("sessions_amount/{url}")]
-        public async Task<ActionResult<int>> GetSessionAmount(string url)
+        public async Task<ActionResult<int>> GetSessionAmount([FromQuery]Url url)
         {
-            try
-            {
-                //TODO: remove the task.run and change the IDataHandler methods to async.
-                var sessionsAmount = await _dataManager.GetSessionsAmount(url);
-                return Ok(sessionsAmount);
-            }
-            catch (KeyNotFoundException e)
-            {
-                Console.WriteLine(e);
-                return NoContent();
-            }
             
+            var sessionsAmount = await _dataManager.GetSessionsAmount(url.address);
+            return Ok(sessionsAmount);
         }
 
         [HttpGet("median/{url}")]
-        public async Task<ActionResult<double>> GetSessionsMedian(string url)
+        public async Task<ActionResult<double>> GetSessionsMedian(Url url)
         {
-            
+           
             var watch = new System.Diagnostics.Stopwatch();
-            
             watch.Start();
-            double median = 0;
-            try
-            {
-                median = await _dataManager.GetMedian(url);
-            }
-            catch (KeyNotFoundException e)
-            {
-                Console.WriteLine(e.Message);
-                return NoContent();
-            }
-
+            var median = await _dataManager.GetMedian(url.address);
             watch.Stop();
             Console.WriteLine($"Execution Time: {watch.ElapsedMilliseconds} ms");
             return Ok(median);

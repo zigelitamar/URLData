@@ -16,9 +16,11 @@ namespace URLdata.Data
         }
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-             Console.WriteLine("on start action");
+            Console.WriteLine("on start action");
+         
              try
              {
+                 
                  await _parser.Parse();
                  Console.WriteLine("Done parsing");
              }

@@ -46,7 +46,7 @@ namespace URLdata.Data
             List<IAsyncEnumerator<PageView>> csvFilesIterators = null;
             try
             {
-                 csvFilesIterators  =  _reader.ReadData();
+                 csvFilesIterators  = _reader.ReadData();
             }
             catch (FileLoadException e)
             {

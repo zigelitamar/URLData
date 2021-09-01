@@ -20,17 +20,9 @@ namespace URLdata.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<int>> UniqueSites(string id)
         {
-            try
-            {
-                return Ok(await _dataManager.GetUniqueSites($"visitor_{id}"));
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return NoContent();
-            }
-           
+            var uniqueSites = await _dataManager.GetUniqueSites($"visitor_{id}");
+            return Ok(uniqueSites);
+            
         }
-        
     }
 }

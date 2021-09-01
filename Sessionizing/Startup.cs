@@ -1,15 +1,20 @@
 using System.Configuration;
 using System.IO;
 using CsvHelper;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using URLdata.Data;
+using URLdata.Models;
 using IParser = URLdata.Data.IParser;
 using IReader = URLdata.Data.IReader;
+
 
 namespace URLdata
 {
@@ -26,11 +31,12 @@ namespace URLdata
             var directorPath = Path.Combine(Directory.GetCurrentDirectory(),
                 $"{ConfigurationManager.AppSettings["resource directory"]}");
 
-            services.AddControllers();
+            services.AddControllers().AddFluentValidation();
             services.AddSingleton<IReader>( reader => new CSVReader(directorPath));
             services.AddSingleton<IParser,CsvDataParser>();
             services.AddHostedService<DataParsingService>();
             services.AddSingleton<DataStatusMiddleware>();
+            services.AddTransient<IValidator<Url>, UrlRequestValidator>();
             services.AddSingleton<IDataHandler,DataHandler>();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Sessionizing", Version = "v1"}); });
         }
