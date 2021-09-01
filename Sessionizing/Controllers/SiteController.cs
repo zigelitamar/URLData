@@ -11,6 +11,7 @@ namespace URLdata.Controllers
 {
     [Route("urls")]
     [ApiController]
+    [BindProperties(SupportsGet = true)]
     public class SiteController : ControllerBase
     {
         private readonly IDataHandler _dataManager;
@@ -21,7 +22,7 @@ namespace URLdata.Controllers
         }
          
 
-        [HttpGet("sessions_amount/{url}")]
+        [HttpGet("sessions_amount/")]
         public async Task<ActionResult<int>> GetSessionAmount([FromQuery]Url url)
         {
             
@@ -29,8 +30,8 @@ namespace URLdata.Controllers
             return Ok(sessionsAmount);
         }
 
-        [HttpGet("median/{url}")]
-        public async Task<ActionResult<double>> GetSessionsMedian(Url url)
+        [HttpGet("median/")]
+        public async Task<ActionResult<double>> GetSessionsMedian([FromQuery]Url url)
         {
            
             var watch = new System.Diagnostics.Stopwatch();

@@ -1,12 +1,10 @@
+using Microsoft.AspNetCore.Mvc;
+
 namespace URLdata.Models
 {
     public class Url
     {
-        public string address { get; }
-
-        public Url(string url)
-        {
-            this.address = url;
-        }
+        [FromQuery] 
+        public string address { get; set; }
     }
 }
