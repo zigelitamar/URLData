@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using URLdata.Data;
-using URLdata.Filters;
 using URLdata.Models;
 
 namespace URLdata.Controllers
@@ -33,7 +30,6 @@ namespace URLdata.Controllers
         [HttpGet("median/")]
         public async Task<ActionResult<double>> GetSessionsMedian([FromQuery]Url url)
         {
-           
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
             var median = await _dataManager.GetMedian(url.address);
@@ -41,7 +37,6 @@ namespace URLdata.Controllers
             Console.WriteLine($"Execution Time: {watch.ElapsedMilliseconds} ms");
             return Ok(median);
         }
-
 
 
     }

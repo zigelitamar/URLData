@@ -1,3 +1,5 @@
+using System;
+using System.Data;
 using FluentValidation;
 using Microsoft.VisualStudio.TestPlatform.CommunicationUtilities.ObjectModel;
 using URLdata.Models;
@@ -8,14 +10,16 @@ namespace URLdata
     {
         public UrlRequestValidator()
         {
-            RuleFor(req => req)
+
+            RuleFor(req => req.address)
                 .Cascade(CascadeMode.Stop)
-                .Must(UrlValidate).WithMessage("Must be  valid url");
+                .NotEmpty().WithMessage("No Url Inserted.")
+                .Must(UrlValidate).WithMessage("Url must be valid.");
         }
 
-        private static bool UrlValidate(Url arg)
+        private static bool UrlValidate(string address)
         {
-            return arg.address.Length >= 7 && arg.address.StartsWith("www");
+            return address.Length >= 7 && address.StartsWith("www");
         }
     }
 }

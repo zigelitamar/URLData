@@ -37,6 +37,7 @@ namespace URLdata
             services.AddHostedService<DataParsingService>();
             services.AddSingleton<DataStatusMiddleware>();
             services.AddTransient<IValidator<Url>, UrlRequestValidator>();
+            services.AddTransient<IValidator<VisitorId>, VisitorIdRequestValidator>();
             services.AddSingleton<IDataHandler,DataHandler>();
             services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Sessionizing", Version = "v1"}); });
         }
