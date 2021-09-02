@@ -13,7 +13,6 @@ namespace URLdata
 
             RuleFor(req => req.address)
                 .Cascade(CascadeMode.Stop)
-                .NotEmpty().WithMessage("No Url Inserted.")
                 .Must(UrlValidate).WithMessage("Url must be valid.");
         }
 

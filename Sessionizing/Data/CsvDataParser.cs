@@ -44,7 +44,7 @@ namespace URLdata.Data
             }
             
             // get iterators list
-            List<IAsyncEnumerator<PageView>> csvFilesIterators = null;
+            List<IAsyncEnumerator<PageView>> csvFilesIterators;
             try
             {
                  csvFilesIterators  = _reader.ReadData();
@@ -67,7 +67,7 @@ namespace URLdata.Data
 
             // initial the data structures to save the necessary data from the csv files.
             Dictionary<string, (Dictionary<string, Session> userSessions, int sessionsCounter, List<long> allUrlSessionsList)> urlSessionDictionary = new Dictionary<string,(Dictionary<string, Session>, int, List<long>)>(); 
-            Dictionary<string, HashSet<string>>  userIdUniqueUrlVisits = new Dictionary<string, HashSet<string>>();
+            var  userIdUniqueUrlVisits = new Dictionary<string, HashSet<string>>();
             
             // iterate on chronologically (by time stamps) on all iterators together.
             while (csvFilesIterators.Count != 0)
@@ -99,7 +99,7 @@ namespace URLdata.Data
                 {
                     Dictionary<string, Session> visitorSessionDictionary = new Dictionary<string, Session>
                     {
-                        [currentPageView.visitor] = new Session(currentPageView.timestamp)
+                        [currentPageView.visitor] = new (currentPageView.timestamp)
                     };
                     
                     urlSessionDictionary[currentPageView.mainUrl] = (visitorSessionDictionary, 1, new List<long>());
