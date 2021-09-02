@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using URLdata.Models;
@@ -43,7 +44,7 @@ namespace URLdata.Data
         /// </returns>
         public List<IAsyncEnumerator<PageView>> ReadData()
         {
-            if (_directoryPath == null || !Directory.Exists(_directoryPath))
+            if (_directoryPath is null || !Directory.Exists(_directoryPath))
             {
                 throw new DirectoryNotFoundException($"Directory path: {_directoryPath} is invalid.\n Please insert an existing directory path.");
             }
@@ -56,33 +57,30 @@ namespace URLdata.Data
                 throw new FileLoadException();
             }
             
-            var allPageViewsListsIterators = new List<IAsyncEnumerator<PageView>>();
-            
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HasHeaderRecord = false,
             };
-            
-            foreach (var currentCsvFileName in this._csvFilesList)
-            {
-                StreamReader reader;
-                
-                try
+            var listOfAsyncEnumerators = _csvFilesList.Select( (file) =>
                 {
-                    reader = new StreamReader(currentCsvFileName);
-                }
-                catch (UnauthorizedAccessException exception)
-                {
-                    throw new UnauthorizedAccessException($"Cannot access the file: {currentCsvFileName.Substring(currentCsvFileName.LastIndexOf("/") + 1)}.");
-                }
+                    StreamReader reader;
+                    try
+                    {
+                        reader = new StreamReader(file);
+                    }
+                    catch (UnauthorizedAccessException exception)
+                    {
+                        throw new UnauthorizedAccessException(
+                            $"Cannot access the file: {file[(file.LastIndexOf("/", StringComparison.Ordinal) + 1)..]}.");
+                    }
 
-                var csv = new CsvReader(reader, config);
-                
-                var pageViewsListIterator = csv.GetRecordsAsync<PageView>();
-                allPageViewsListsIterators.Add(pageViewsListIterator.GetAsyncEnumerator());
-            }
+                    var csv = new CsvReader(reader, config);
+                    var pageViewsListIterator = csv.GetRecordsAsync<PageView>().GetAsyncEnumerator();
+                    return pageViewsListIterator;
 
-            return allPageViewsListsIterators;
+                }
+            ).ToList();
+            return listOfAsyncEnumerators;
         }
 
         /// <summary>
