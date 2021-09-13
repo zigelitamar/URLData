@@ -1,6 +1,5 @@
 using System.Configuration;
 using System.IO;
-using CsvHelper;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -8,7 +7,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using URLdata.Data;
 using URLdata.Models;
@@ -20,9 +18,6 @@ namespace URLdata
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -32,7 +27,7 @@ namespace URLdata
                 $"{ConfigurationManager.AppSettings["resource directory"]}");
 
             services.AddControllers().AddFluentValidation();
-            services.AddSingleton<IReader>( reader => new CSVReader(directorPath));
+            services.AddSingleton<IReader>( _ => new CSVReader(directorPath));
             services.AddSingleton<IParser,CsvDataParser>();
             services.AddHostedService<DataParsingService>();
             services.AddSingleton<DataStatusMiddleware>();

@@ -1,10 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 using URLdata.Models;
-using MathNet.Numerics.Statistics;
 
 namespace URLdata.Data
 {
@@ -14,11 +10,11 @@ namespace URLdata.Data
     /// </summary>
     public class DataHandler : IDataHandler
     {
-        public Dictionary<string, (Dictionary<string, Session> userSessions, int sessionsCounter, List<long> allUrlSessionsList)> urlSessionDictionary { get; }
+        private Dictionary<string, (Dictionary<string, Session> userSessions, int sessionsCounter, List<long> allUrlSessionsList)> urlSessionDictionary { get; }
 
-        public Dictionary<string, HashSet<string>>  userIdUniqueUrlVisits { get; }
+        private Dictionary<string, HashSet<string>>  userIdUniqueUrlVisits { get; }
 
-        public Dictionary<string, double > mediansCalculated { get; }
+        private Dictionary<string, double > mediansCalculated { get; }
 
 
 
@@ -36,8 +32,8 @@ namespace URLdata.Data
         {
             var parser1 = parser;
             mediansCalculated = new Dictionary<string, double>();
-            urlSessionDictionary = parser1.UrlSessionDictionary;
-            userIdUniqueUrlVisits = parser1.UserIdUniqueUrlVisits;
+            urlSessionDictionary = parser1.urlSessionDictionary;
+            userIdUniqueUrlVisits = parser1.userIdUniqueUrlVisits;
 
         }
         

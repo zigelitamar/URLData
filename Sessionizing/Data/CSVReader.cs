@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
 using URLdata.Models;
@@ -17,7 +16,7 @@ namespace URLdata.Data
     public class CSVReader : IReader
     {
         private readonly string _directoryPath;
-        private List<string> _csvFilesList = new List<string>();
+        private List<string> _csvFilesList = new();
 
         /// <summary>
         /// Constructor.
@@ -52,34 +51,32 @@ namespace URLdata.Data
             // get all csv files in the given directory path
             GetCsvFileNames();
             
-            if (_csvFilesList == null)
-            {
-                throw new FileLoadException();
-            }
-            
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HasHeaderRecord = false,
             };
-            var listOfAsyncEnumerators = _csvFilesList.Select( (file) =>
-                {
-                    StreamReader reader;
-                    try
-                    {
-                        reader = new StreamReader(file);
-                    }
-                    catch (UnauthorizedAccessException exception)
-                    {
-                        throw new UnauthorizedAccessException(
-                            $"Cannot access the file: {file[(file.LastIndexOf("/", StringComparison.Ordinal) + 1)..]}.");
-                    }
 
+             var listOfAsyncEnumerators = _csvFilesList
+                 .Select(async(file) =>
+                {
+                    var reader = new StreamReader(file);
                     var csv = new CsvReader(reader, config);
                     var pageViewsListIterator = csv.GetRecordsAsync<PageView>().GetAsyncEnumerator();
+                    await pageViewsListIterator.MoveNextAsync();
+                    
                     return pageViewsListIterator;
-
                 }
-            ).ToList();
+            )
+                 .Where( iter => iter.Result.Current is not null)
+                 .Select(iterTask => iterTask.Result)
+                 .ToList();
+             
+
+             if(listOfAsyncEnumerators is null || listOfAsyncEnumerators.Count == 0)
+            {
+                throw new NullReferenceException($"iterators list is null or empty.");
+            }
+            
             return listOfAsyncEnumerators;
         }
 
@@ -95,11 +92,13 @@ namespace URLdata.Data
         {
 
             _csvFilesList = Directory.GetFiles(_directoryPath, "*.csv").ToList();
-            if (_csvFilesList == null || _csvFilesList.Count == 0)
+            if (_csvFilesList.Count == 0)
             {
                 throw new FileNotFoundException(
                     $"There are no CSV files in the given directory path: {_directoryPath}");
             }
         }
+
+       
     }
 }

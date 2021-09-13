@@ -16,8 +16,7 @@ namespace URLdata.Models
 
         public void ResetSession(long newTimestamp)
         {
-            startTime = newTimestamp;
-            endTime = newTimestamp;
+            startTime = endTime = newTimestamp;
         }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using URLdata.Models;
@@ -11,11 +10,11 @@ namespace URLdata.Data
     public interface IParser
     {
         public Dictionary<string, (Dictionary<string, Session> userSessions, int sessionsCounter, List<long>
-            allUrlSessionsList)> UrlSessionDictionary { get;
+            allUrlSessionsList)> urlSessionDictionary { get;
             set;
         }
-        public Dictionary<string, HashSet<string>>  UserIdUniqueUrlVisits { get; set; }
-        public Task Parse();
+        public Dictionary<string, HashSet<string>>  userIdUniqueUrlVisits { get; set; }
+        public Task ParseBySessions();
    
         
 

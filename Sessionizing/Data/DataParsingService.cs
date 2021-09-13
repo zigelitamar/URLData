@@ -21,7 +21,7 @@ namespace URLdata.Data
              try
              {
                  
-                 await _parser.Parse();
+                 await _parser.ParseBySessions();
                  Console.WriteLine("Done parsing");
              }
              catch (ParsingException e)

@@ -1,22 +1,20 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using URLdata.Data;
-using URLdata.Models;
 using Xunit;
 
 namespace SessionizingXUnitTests
 {
     public class CsvDataParserTests
     {
+        private readonly IReader _reader;
         public CsvDataParserTests()
         {
             // real path
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "TestFolder/");
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "TestFolder/");
 
             // creating a CSVReader
-            IReader csvReader = new CSVReader(path);
+            _reader = new CSVReader(path);
         }
 
         /// <summary>
@@ -26,8 +24,14 @@ namespace SessionizingXUnitTests
         public  void TestReadDataNullArgument()
         {
             var csvDataParser = new CsvDataParser(null);
-            var caughtException = Assert.ThrowsAsync<NullReferenceException>( ()=> csvDataParser.Parse());
+            var caughtException = Assert.ThrowsAsync<NullReferenceException>( ()=> csvDataParser.ParseBySessions());
             Assert.Equal("IReader object is null", caughtException.Result.Message);
+        }
+
+        [Fact]
+        public void TestSessionCreationConflicts()
+        {
+            
         }
 
     }

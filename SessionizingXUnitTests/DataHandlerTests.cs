@@ -83,7 +83,7 @@ namespace SessionizingXUnitTests
             IReader reader = new CSVReader(directoryPath);
             
             IParser parser = new CsvDataParser(reader);
-            await parser.Parse();
+            await parser.ParseBySessions();
             _dataHandler = new DataHandler(parser);
         }
 
